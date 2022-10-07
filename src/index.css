@@ -32,3 +32,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.btn {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.btn-primary {
+  color: white;
+  background-color: #1966ff;
+}
