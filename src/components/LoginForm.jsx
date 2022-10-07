@@ -1,12 +1,15 @@
 import { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { loginRoute } from "../utils/apiRoutes";
 
-function LoginForm() {
+function LoginForm({ handleError }) {
   const [formInfos, setFormInfos] = useState({
     pseudo: "",
     password: "",
   });
   const [errors, setErrors] = useState([]);
+  const [submmitting, setSubmitting] = useState(false);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -23,7 +26,29 @@ function LoginForm() {
           `Veillez remplir le champ ${data}`,
         ]);
     });
-    if (errors.length > 0) return;
+    if (formInfos.pseudo && formInfos.password) {
+      setSubmitting(true);
+      const post = axios({
+        method: "post",
+        url: loginRoute,
+        data: { ...formInfos },
+      });
+
+      post
+        .then((response) => {
+          if (response.data.type === "Error")
+            return setErrors((prevState) => [
+              ...prevState,
+              response.data.message,
+            ]);
+          console.log(response);
+        })
+        .catch((err) => {
+          handleError();
+          console.log(err);
+        })
+        .finally(() => setSubmitting(false));
+    }
   };
 
   return (
@@ -65,7 +90,9 @@ function LoginForm() {
           />
         </div>
         <div className="btns">
-          <button className="btn btn-primary">Connecter</button>
+          <button className="btn btn-primary">
+            {submmitting ? "Connexion..." : "Connecter"}
+          </button>
         </div>
       </form>
     </Form>
