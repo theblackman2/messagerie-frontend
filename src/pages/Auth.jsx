@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import LoginForm from "../components/LoginForm";
+import SignupForm from "../components/SignupForm";
 
 function Auth() {
   const [login, setLogin] = useState(true);
@@ -30,9 +31,7 @@ function Auth() {
               Inscription
             </button>
           </div>
-          <div className="form">
-            <LoginForm />
-          </div>
+          <div className="form">{login ? <LoginForm /> : <SignupForm />}</div>
         </div>
       </div>
     </Container>
