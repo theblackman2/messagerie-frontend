@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { loginRoute } from "../utils/apiRoutes";
+import appState from "../utils/state";
 
 function LoginForm({ handleError }) {
+  const { setLogedIn, setLogedUser } = useContext(appState);
   const [formInfos, setFormInfos] = useState({
     pseudo: "",
     password: "",
@@ -41,7 +43,10 @@ function LoginForm({ handleError }) {
               ...prevState,
               response.data.message,
             ]);
-          console.log(response);
+          const user = response.data.user;
+          setLogedUser(user);
+          localStorage.setItem("user", JSON.stringify(user));
+          setLogedIn(true);
         })
         .catch((err) => {
           handleError();

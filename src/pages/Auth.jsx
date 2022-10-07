@@ -143,4 +143,11 @@ const Container = styled.div`
       }
     }
   }
+
+  @media (max-width: 500px) {
+    .auth-section {
+      width: 90%;
+      margin: 2rem 0;
+    }
+  }
 `;

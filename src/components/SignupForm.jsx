@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Form } from "./LoginForm";
 import axios from "axios";
 import { registerRoute } from "../utils/apiRoutes";
+import appState from "../utils/state";
 
 function SignupForm({ handleError }) {
+  const { setLogedIn, setLogedUser } = useContext(appState);
   const [formInfos, setFormInfos] = useState({
     pseudo: "",
     password: "",
@@ -52,7 +54,10 @@ function SignupForm({ handleError }) {
               response.data.message,
             ]);
           }
-          console.log("Created");
+          const user = response.data.user;
+          localStorage.setItem("user", JSON.stringify(user));
+          setLogedUser(user);
+          setLogedIn(true);
         })
         .catch((err) => handleError())
         .finally(() => setSubmitting(false));
