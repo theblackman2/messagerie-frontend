@@ -1,4 +1,4 @@
-const api = process.env.API_URL;
+const api = process.env.REACT_APP_API_URL;
 
 export const loginRoute = `${api}/auth/login`;
 export const registerRoute = `${api}/auth/register`;
