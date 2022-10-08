@@ -8,6 +8,7 @@ function App() {
   const [logedIn, setLogedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [logedUser, setLogedUser] = useState({});
+  const [showContacts, setShowContacts] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -30,6 +31,8 @@ function App() {
         setLogedUser,
         logedIn,
         logedUser,
+        showContacts,
+        setShowContacts,
       }}
     >
       <BrowserRouter>

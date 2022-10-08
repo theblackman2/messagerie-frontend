@@ -6,9 +6,14 @@ import { MdContactPage } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 
 function Sidebar() {
-  const { logedUser } = useContext(appState);
+  const { logedUser, setLogedIn, showContacts, setShowContacts } =
+    useContext(appState);
+  const disconnect = () => {
+    localStorage.removeItem("user");
+    setLogedIn(false);
+  };
   return (
-    <Container>
+    <Container showContacts={showContacts}>
       <div className="sidebar-top">
         <img
           className="user-avatar"
@@ -16,16 +21,22 @@ function Sidebar() {
           alt={`${logedUser.pseudo} avatar`}
         />
         <div className="switches">
-          <button className="switch">
+          <button
+            onClick={() => setShowContacts(false)}
+            className="switch messages-switch"
+          >
             <AiFillMessage />
           </button>
-          <button className="switch">
+          <button
+            onClick={() => setShowContacts(true)}
+            className="switch contacts-switch"
+          >
             <MdContactPage />
           </button>
         </div>
       </div>
       <div className="sidebar-bottom">
-        <button className="logout-btn">
+        <button onClick={disconnect} className="logout-btn">
           <IoLogOut />
         </button>
       </div>
@@ -80,7 +91,6 @@ const Container = styled.div`
           display: block;
           width: 6px;
           height: 100%;
-          background-color: #ffe921;
           top: 0;
           right: 0;
         }
@@ -94,6 +104,16 @@ const Container = styled.div`
             color: #28282e;
           }
         }
+      }
+
+      .messages-switch::after {
+        background-color: ${({ showContacts }) =>
+          showContacts ? "transparent" : "#ffe921"};
+      }
+
+      .contacts-switch::after {
+        background-color: ${({ showContacts }) =>
+          !showContacts ? "transparent" : "#ffe921"};
       }
     }
   }
