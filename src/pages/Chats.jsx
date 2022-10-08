@@ -36,6 +36,7 @@ const Container = styled.div`
   padding: 1.5rem;
   width: 100%;
   height: 100vh;
+  max-height: 100vh;
   display: flex;
   gap: 1rem;
   background-color: #eaeaea;
