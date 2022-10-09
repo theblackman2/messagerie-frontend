@@ -9,6 +9,11 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [logedUser, setLogedUser] = useState({});
   const [showContacts, setShowContacts] = useState(false);
+  const [selectedConversation, setSelectedConversation] = useState({
+    id: "",
+    imageUrl: "",
+    name: "",
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -33,6 +38,8 @@ function App() {
         logedUser,
         showContacts,
         setShowContacts,
+        selectedConversation,
+        setSelectedConversation,
       }}
     >
       <BrowserRouter>

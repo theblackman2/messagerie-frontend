@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
+import appState from "../utils/state";
 
 function Contact({ contact }) {
+  const { setSelectedConversation } = useContext(appState);
   return (
-    <Container>
+    <Container
+      onClick={() =>
+        setSelectedConversation({
+          id: contact._id,
+          imageUrl: contact.imageUrl ? contact.imageUrl : "/uknown.png",
+          name: contact.pseudo,
+        })
+      }
+    >
       <div className="contact">
         <img
           src={contact.imageUrl ? contact.imageUrl : "/uknown.png"}

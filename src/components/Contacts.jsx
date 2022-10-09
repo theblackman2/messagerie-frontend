@@ -38,9 +38,11 @@ function Contacts() {
           <div className="contact"></div>
         </ContactLoader>
       ) : (
-        contacts.map((contact, index) => (
-          <Contact key={index} contact={contact} />
-        ))
+        contacts.map((contact, index) => {
+          // eslint-disable-next-line
+          if (contact._id === logedUser.id) return;
+          return <Contact key={index} contact={contact} />;
+        })
       )}
     </Container>
   );
