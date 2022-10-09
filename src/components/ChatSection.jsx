@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import appState from "../utils/state";
 import axios from "axios";
@@ -6,14 +6,60 @@ import { conversationsRoute } from "../utils/apiRoutes";
 import { BsFillEmojiSmileFill } from "react-icons/bs";
 import { AiFillCamera } from "react-icons/ai";
 import { IoSend } from "react-icons/io5";
+import Sending from "./Sending";
+import Message from "./Message";
 
 function ChatSection() {
   const { selectedConversation, logedUser } = useContext(appState);
-  const [messages, setMessages] = useState([]);
+  const [conversation, setConversation] = useState({});
   const [loading, setLoading] = useState(true);
+  const [formInfos, setFormInfos] = useState({
+    text: "",
+  });
+  const [sending, setSending] = useState(false);
+  const messageEndRef = useRef();
+
+  const scrollToBottom = (smooth) => {
+    console.log("scroll");
+    messageEndRef.current?.scrollIntoView({
+      behavior: smooth ? "smooth" : "auto",
+    });
+  };
 
   const handleSend = (e) => {
     e.preventDefault();
+    if (formInfos.text) {
+      setSending(true);
+      const message = {
+        sender: selectedConversation.id,
+        text: formInfos.text,
+      };
+      const sendRoute = `${conversationsRoute}/message`;
+      const sent = axios({
+        method: "post",
+        url: sendRoute,
+        headers: {
+          Authorization: logedUser.token,
+        },
+        data: {
+          id: conversation._id,
+          message: message,
+        },
+      });
+
+      sent
+        .then((response) => {
+          scrollToBottom(true);
+          setFormInfos((prevState) => ({ ...prevState, text: "" }));
+          setSending(false);
+        })
+        .catch((err) => console.error(err));
+    }
+  };
+
+  const handleTypeMessage = (e) => {
+    const { name, value } = e.target;
+    setFormInfos((prevState) => ({ ...prevState, [name]: value }));
   };
 
   useEffect(() => {
@@ -21,7 +67,7 @@ function ChatSection() {
     const token = logedUser.token;
     if (selectedConversation.id) {
       setLoading(true);
-      setMessages([]);
+      setConversation({});
       const conversation = axios({
         method: "post",
         url: route,
@@ -34,7 +80,10 @@ function ChatSection() {
       });
 
       conversation
-        .then((response) => setMessages(response.data.messages))
+        .then((response) => {
+          setConversation(response.data);
+          scrollToBottom(false);
+        })
         .catch((err) => console.log(err))
         .finally(() => setLoading(false));
     }
@@ -56,7 +105,7 @@ function ChatSection() {
           <div className="conversation-body">
             {loading ? (
               <LoadingMessages>Chargement des messages</LoadingMessages>
-            ) : messages.length <= 0 ? (
+            ) : conversation.messages.length <= 0 ? (
               <NoChat>
                 <div className="text">Aucun message, faites le premier pas</div>
                 <img
@@ -66,8 +115,16 @@ function ChatSection() {
                 />
               </NoChat>
             ) : (
-              <div>Les messages</div>
+              <div className="messages">
+                {conversation.messages.map((message, index) => {
+                  const text = message.text;
+                  const mine = message.sender === logedUser.id;
+
+                  return <Message key={index} text={text} mine={mine} />;
+                })}
+              </div>
             )}
+            <div ref={messageEndRef} />
           </div>
           <div className="conversation-foot">
             <form onSubmit={handleSend}>
@@ -76,7 +133,9 @@ function ChatSection() {
                   placeholder="Ecrire un message"
                   autoFocus
                   type="text"
-                  name="message"
+                  name="text"
+                  value={formInfos.text}
+                  onChange={handleTypeMessage}
                 />
                 <div>
                   <button>
@@ -88,7 +147,7 @@ function ChatSection() {
                 </div>
               </div>
               <button className="send" type="submit">
-                <IoSend />
+                {sending ? <Sending /> : <IoSend />}
               </button>
             </form>
           </div>
@@ -117,6 +176,18 @@ const Container = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   padding: 1rem;
   position: relative;
+
+  .conversation-body {
+    overflow-y: scroll;
+    max-height: calc(100% - 130px);
+    padding: 1rem 0;
+
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
 
   .conversation-head {
     display: flex;
@@ -147,6 +218,9 @@ const Container = styled.div`
     align-items: center;
     border-top: 2px solid #ccc;
     padding: 0 2rem;
+    background-color: white;
+    z-index: 10;
+    border-radius: inherit;
 
     form {
       width: 100%;
@@ -182,16 +256,24 @@ const Container = styled.div`
       }
 
       .send {
-        width: calc(8% - 16px);
+        width: 40px;
+        height: 40px;
         border-radius: 10px;
         background-color: #d9d9d9;
-        padding: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         transition: 0.3s;
-        font-size: 20px;
+
+        > div {
+          width: 100%;
+          height: 100%;
+        }
+
+        svg {
+          font-size: 20px;
+        }
 
         :hover {
           color: blue;
