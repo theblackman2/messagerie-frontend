@@ -4,11 +4,22 @@ import { usersRoute } from "../utils/apiRoutes";
 import axios from "axios";
 import appState from "../utils/state";
 import Contact from "./Contact";
+import { NoChat } from "./ChatSection";
 
 function Contacts() {
   const { logedUser } = useContext(appState);
   const [contacts, setContacts] = useState([]);
   const [loadingContacts, setLoadingContacts] = useState(true);
+  const [copyinLink, setCopyingLink] = useState(false);
+
+  const copyLink = () => {
+    const link = window.location.href;
+    navigator.clipboard.writeText(link);
+    setCopyingLink(true);
+    setTimeout(() => {
+      setCopyingLink(false);
+    }, 3000);
+  };
   useEffect(() => {
     const token = logedUser.token;
     const users = axios({
@@ -37,12 +48,23 @@ function Contacts() {
           <div className="contact"></div>
           <div className="contact"></div>
         </ContactLoader>
-      ) : (
+      ) : contacts.length > 1 ? (
         contacts.map((contact, index) => {
           // eslint-disable-next-line
           if (contact._id === logedUser.id) return;
           return <Contact key={index} contact={contact} />;
         })
+      ) : (
+        <NoChat>
+          <p className="text">
+            Il n'ya personne <br /> Invitez vos amis à vous réjoindre avec le
+            lien
+          </p>
+          <button onClick={copyLink} className="btn btn-primary">
+            {copyinLink ? "Lien copié" : "Copier le lien"}
+          </button>
+          <img className="illustration" src="/Sad.png" alt="Sad girl" />
+        </NoChat>
       )}
     </Container>
   );

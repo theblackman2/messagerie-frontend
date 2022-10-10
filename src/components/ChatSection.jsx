@@ -20,7 +20,6 @@ function ChatSection() {
   const messageEndRef = useRef();
 
   const scrollToBottom = (smooth) => {
-    console.log("scroll");
     messageEndRef.current?.scrollIntoView({
       behavior: smooth ? "smooth" : "auto",
     });
@@ -82,12 +81,15 @@ function ChatSection() {
       conversation
         .then((response) => {
           setConversation(response.data);
-          scrollToBottom(false);
         })
         .catch((err) => console.log(err))
         .finally(() => setLoading(false));
     }
   }, [selectedConversation, logedUser]);
+
+  useEffect(() => {
+    scrollToBottom(true);
+  }, [conversation.messages]);
   return (
     <Container>
       {selectedConversation.id ? (
@@ -283,7 +285,7 @@ const Container = styled.div`
   }
 `;
 
-const NoChat = styled.div`
+export const NoChat = styled.div`
   width: 100%;
   height: 100%;
   border-radius: inherit;
@@ -292,6 +294,7 @@ const NoChat = styled.div`
   justify-content: center;
   flex-direction: column;
   padding: 2rem;
+  gap: 1rem;
 
   .illustration {
     width: 150px;
@@ -300,6 +303,7 @@ const NoChat = styled.div`
 
   .text {
     font-weight: bold;
+    text-align: center;
   }
 `;
 
