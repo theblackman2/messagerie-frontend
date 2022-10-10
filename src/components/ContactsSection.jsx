@@ -12,6 +12,7 @@ function ContactsSection() {
   const handleSearch = (e) => {
     e.preventDefault();
   };
+
   return (
     <Container>
       <div className="form-search">
