@@ -121,8 +121,19 @@ function ChatSection() {
                 {conversation.messages.map((message, index) => {
                   const text = message.text;
                   const mine = message.sender === logedUser.id;
-
-                  return <Message key={index} text={text} mine={mine} />;
+                  const stamps = message.createdAt;
+                  const stampsArray = stamps.split("T");
+                  const date = stampsArray[0].split("-").reverse().join("/");
+                  const time = stampsArray[1].split(".")[0];
+                  const finalDate = `Le ${date} à ${time}`;
+                  return (
+                    <Message
+                      key={index}
+                      text={text}
+                      mine={mine}
+                      date={finalDate}
+                    />
+                  );
                 })}
               </div>
             )}
