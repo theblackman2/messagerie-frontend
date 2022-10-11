@@ -7,7 +7,7 @@ import Contact from "./Contact";
 import { NoChat } from "./ChatSection";
 
 function Contacts() {
-  const { logedUser } = useContext(appState);
+  const { logedUser, setError } = useContext(appState);
   const [contacts, setContacts] = useState([]);
   const [loadingContacts, setLoadingContacts] = useState(true);
   const [copyinLink, setCopyingLink] = useState(false);
@@ -32,9 +32,9 @@ function Contacts() {
 
     users
       .then((response) => setContacts(response.data))
-      .catch((err) => console.log(err))
+      .catch((err) => setError(true))
       .finally(() => setLoadingContacts(false));
-  }, [logedUser.token]);
+  }, [logedUser.token, setError]);
   return (
     <Container>
       {loadingContacts ? (

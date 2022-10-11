@@ -8,7 +8,7 @@ import { ContactLoader } from "./Contacts";
 import { NoChat } from "./ChatSection";
 
 function Recents() {
-  const { logedUser, setShowContacts } = useContext(appState);
+  const { logedUser, setShowContacts, setError } = useContext(appState);
   const [recents, setRecents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,9 +27,9 @@ function Recents() {
 
     recents
       .then((response) => setRecents(response.data))
-      .catch((err) => console.log(err))
+      .catch((err) => setError(true))
       .finally(() => setLoading(false));
-  }, [logedUser]);
+  }, [logedUser, setError]);
 
   return (
     <Container>

@@ -6,7 +6,7 @@ import { usersRoute } from "../utils/apiRoutes";
 import { ContactLoader } from "./Contacts";
 
 function Recent({ recent }) {
-  const { logedUser, setSelectedConversation } = useContext(appState);
+  const { logedUser, setSelectedConversation, setError } = useContext(appState);
   const [recentMessage, setRecentMessage] = useState(
     recent.messages[recent.messages.length - 1]
   );
@@ -28,9 +28,9 @@ function Recent({ recent }) {
     });
     user
       .then((response) => setContact(response.data))
-      .catch((err) => console.log(err))
+      .catch((err) => setError(true))
       .finally(() => setLoading(false));
-  }, [recent, logedUser]);
+  }, [recent, logedUser, setError]);
 
   return loading ? (
     <ContactLoader>

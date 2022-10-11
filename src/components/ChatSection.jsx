@@ -10,7 +10,7 @@ import Sending from "./Sending";
 import Message from "./Message";
 
 function ChatSection() {
-  const { selectedConversation, logedUser } = useContext(appState);
+  const { selectedConversation, logedUser, setError } = useContext(appState);
   const [conversation, setConversation] = useState({});
   const [loading, setLoading] = useState(true);
   const [formInfos, setFormInfos] = useState({
@@ -52,7 +52,7 @@ function ChatSection() {
           setFormInfos((prevState) => ({ ...prevState, text: "" }));
           setSending(false);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => setError(true));
     }
   };
 
@@ -82,10 +82,10 @@ function ChatSection() {
         .then((response) => {
           setConversation(response.data);
         })
-        .catch((err) => console.log(err))
+        .catch((err) => setError(true))
         .finally(() => setLoading(false));
     }
-  }, [selectedConversation, logedUser]);
+  }, [selectedConversation, logedUser, setError]);
 
   useEffect(() => {
     scrollToBottom(true);
