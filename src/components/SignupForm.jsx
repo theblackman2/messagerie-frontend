@@ -4,8 +4,8 @@ import axios from "axios";
 import { registerRoute } from "../utils/apiRoutes";
 import appState from "../utils/state";
 
-function SignupForm({ handleError }) {
-  const { setLogedIn, setLogedUser } = useContext(appState);
+function SignupForm() {
+  const { setLogedIn, setLogedUser, setError } = useContext(appState);
   const [formInfos, setFormInfos] = useState({
     pseudo: "",
     password: "",
@@ -59,7 +59,7 @@ function SignupForm({ handleError }) {
           setLogedUser(user);
           setLogedIn(true);
         })
-        .catch((err) => handleError())
+        .catch((err) => setError(true))
         .finally(() => setSubmitting(false));
     }
   };

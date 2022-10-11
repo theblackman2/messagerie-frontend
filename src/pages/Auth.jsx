@@ -1,24 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
-import Error from "../components/Error";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
 
 function Auth() {
   const [login, setLogin] = useState(true);
-  const [error, setError] = useState(false);
-
-  const handleError = () => setError(true);
-
-  const closeError = () => setError(false);
 
   return (
     <Container login={login}>
-      {error && (
-        <div className="error-handle">
-          <Error close={closeError} />
-        </div>
-      )}
       <div className="auth-section">
         <div className="head">
           <h1 className="app-name">To loba</h1>
@@ -43,13 +32,7 @@ function Auth() {
               Inscription
             </button>
           </div>
-          <div className="form">
-            {login ? (
-              <LoginForm handleError={handleError} />
-            ) : (
-              <SignupForm handleError={handleError} />
-            )}
-          </div>
+          <div className="form">{login ? <LoginForm /> : <SignupForm />}</div>
         </div>
       </div>
     </Container>
@@ -65,14 +48,6 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
-  .error-handle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-  }
 
   .auth-section {
     width: 500px;
