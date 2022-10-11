@@ -30,7 +30,7 @@ function ChatSection() {
     if (formInfos.text) {
       setSending(true);
       const message = {
-        sender: selectedConversation.id,
+        sender: logedUser.id,
         text: formInfos.text,
       };
       const sendRoute = `${conversationsRoute}/message`;

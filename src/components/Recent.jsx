@@ -12,6 +12,7 @@ function Recent({ recent }) {
   );
   const [contact, setContact] = useState({});
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     setRecentMessage(recent.messages[recent.messages.length - 1]);
     const contactId = recent.participants.filter(
