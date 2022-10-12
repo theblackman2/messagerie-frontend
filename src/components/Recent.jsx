@@ -1,42 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import appState from "../utils/state";
-import axios from "axios";
-import { usersRoute } from "../utils/apiRoutes";
-import { ContactLoader } from "./Contacts";
 
 function Recent({ recent }) {
-  const { logedUser, setSelectedConversation, setError } = useContext(appState);
-  const [recentMessage, setRecentMessage] = useState(
-    recent.messages[recent.messages.length - 1]
-  );
-  const [contact, setContact] = useState({});
-  const [loading, setLoading] = useState(true);
+  const { logedUser, setSelectedConversation } = useContext(appState);
+  const recentMessage = recent.messages[recent.messages.length - 1];
+  const contact = recent.participants.filter(
+    (participant) => participant._id !== logedUser.id
+  )[0];
 
-  useEffect(() => {
-    setRecentMessage(recent.messages[recent.messages.length - 1]);
-    const contactId = recent.participants.filter(
-      (participant) => participant !== logedUser.id
-    )[0];
-    const route = `${usersRoute}/${contactId}`;
-    const user = axios({
-      method: "get",
-      url: route,
-      headers: {
-        Authorization: logedUser.token,
-      },
-    });
-    user
-      .then((response) => setContact(response.data))
-      .catch((err) => setError(true))
-      .finally(() => setLoading(false));
-  }, [recent, logedUser, setError]);
-
-  return loading ? (
-    <ContactLoader>
-      <div className="contact"></div>
-    </ContactLoader>
-  ) : (
+  return (
     <Container
       onClick={() =>
         setSelectedConversation({

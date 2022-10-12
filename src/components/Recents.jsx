@@ -26,7 +26,10 @@ function Recents() {
     });
 
     recents
-      .then((response) => setRecents(response.data))
+      .then((response) => {
+        console.log(response.data);
+        setRecents(response.data);
+      })
       .catch((err) => setError(true))
       .finally(() => setLoading(false));
   }, [logedUser, setError]);
