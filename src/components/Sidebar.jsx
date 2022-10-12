@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import appState from "../utils/state";
 import { AiFillMessage } from "react-icons/ai";
@@ -6,12 +6,20 @@ import { MdContactPage } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 
 function Sidebar() {
-  const { logedUser, setLogedIn, showContacts, setShowContacts } =
+  const { logedUser, setLogedIn, showContacts, setShowContacts, socket } =
     useContext(appState);
   const disconnect = () => {
     localStorage.removeItem("user");
     setLogedIn(false);
   };
+
+  // eslint-disable-next-line
+  useEffect(() => {
+    // eslint-disable-next-line
+    socket.current.emit("add-user", logedUser.id);
+
+    // eslint-disable-next-line
+  }, []);
   return (
     <Container showContacts={showContacts}>
       <div className="sidebar-top">

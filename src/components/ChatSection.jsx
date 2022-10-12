@@ -10,7 +10,8 @@ import Sending from "./Sending";
 import Message from "./Message";
 
 function ChatSection() {
-  const { selectedConversation, logedUser, setError } = useContext(appState);
+  const { selectedConversation, logedUser, setError, socket } =
+    useContext(appState);
   const [conversation, setConversation] = useState({});
   const [loading, setLoading] = useState(true);
   const [formInfos, setFormInfos] = useState({
@@ -51,10 +52,33 @@ function ChatSection() {
           scrollToBottom(true);
           setFormInfos((prevState) => ({ ...prevState, text: "" }));
           setSending(false);
+          socket.current.emit("send-msg", {
+            to: selectedConversation.id,
+            message: response.data.data,
+          });
+          setConversation((prevState) => ({
+            ...prevState,
+            messages: [...prevState.messages, response.data.data],
+          }));
         })
         .catch((err) => setError(true));
     }
   };
+
+  // eslint-disable-next-line
+  useEffect(() => {
+    // eslint-disable-next-line
+    socket.current.on("receive", (message) => {
+      // eslint-disable-next-line
+      if (selectedConversation.id) {
+        setConversation((prevState) => ({
+          ...prevState,
+          messages: [...prevState.messages, message],
+        }));
+      }
+    });
+    // eslint-disable-next-line
+  }, [selectedConversation]);
 
   const handleTypeMessage = (e) => {
     const { name, value } = e.target;

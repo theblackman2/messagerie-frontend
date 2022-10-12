@@ -48,7 +48,11 @@ function Recents() {
           <div className="contact"></div>
         </ContactLoader>
       ) : recents.length > 0 ? (
-        recents.map((recent, index) => <Recent key={index} recent={recent} />)
+        recents.map((recent, index) => {
+          // eslint-disable-next-line
+          if (recent.messages.length <= 0) return;
+          return <Recent key={index} recent={recent} />;
+        })
       ) : (
         <NoChat>
           <p className="text">Aucune conversation</p>
