@@ -85,7 +85,7 @@ function ChatSection() {
     if (!arrivalMessage) return;
     if (arrivalMessage.sender !== selectedConversation.id) return;
     setMessages((prevState) => [...prevState, arrivalMessage]);
-  }, [arrivalMessage]);
+  }, [arrivalMessage, selectedConversation]);
 
   useEffect(() => {
     const route = conversationsRoute;

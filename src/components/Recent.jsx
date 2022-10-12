@@ -1,13 +1,22 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import appState from "../utils/state";
 
 function Recent({ recent }) {
-  const { logedUser, setSelectedConversation } = useContext(appState);
-  const recentMessage = recent.messages[recent.messages.length - 1];
+  const { logedUser, setSelectedConversation, socket } = useContext(appState);
+  const [recentMessage, setRecentMessage] = useState(
+    recent.messages[recent.messages.length - 1]
+  );
+
   const contact = recent.participants.filter(
     (participant) => participant._id !== logedUser.id
   )[0];
+
+  useEffect(() => {
+    socket.current.on("receive", (message) => {
+      if (contact._id === message.sender) setRecentMessage(message);
+    });
+  }, [socket, contact]);
 
   return (
     <Container
