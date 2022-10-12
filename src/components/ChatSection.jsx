@@ -14,11 +14,17 @@ function ChatSection() {
     useContext(appState);
   const [conversation, setConversation] = useState({});
   const [loading, setLoading] = useState(true);
-  const [formInfos, setFormInfos] = useState({
-    text: "",
-  });
   const [sending, setSending] = useState(false);
   const messageEndRef = useRef();
+  const [messages, setMessages] = useState([]);
+  const [arrivalMessage, setArrivalMessage] = useState(null);
+
+  // store the text in message input
+  const messageRef = useRef();
+
+  useEffect(() => {
+    if (conversation.messages) setMessages(conversation.messages);
+  }, [conversation]);
 
   const scrollToBottom = (smooth) => {
     messageEndRef.current?.scrollIntoView({
@@ -28,11 +34,11 @@ function ChatSection() {
 
   const handleSend = (e) => {
     e.preventDefault();
-    if (formInfos.text) {
+    if (messageRef.current.value) {
       setSending(true);
       const message = {
         sender: logedUser.id,
-        text: formInfos.text,
+        text: messageRef.current.value,
       };
       const sendRoute = `${conversationsRoute}/message`;
       const sent = axios({
@@ -49,17 +55,15 @@ function ChatSection() {
 
       sent
         .then((response) => {
+          const message = response.data.data;
           scrollToBottom(true);
-          setFormInfos((prevState) => ({ ...prevState, text: "" }));
+          messageRef.current.value = "";
           setSending(false);
           socket.current.emit("send-msg", {
             to: selectedConversation.id,
-            message: response.data.data,
+            message: message,
           });
-          setConversation((prevState) => ({
-            ...prevState,
-            messages: [...prevState.messages, response.data.data],
-          }));
+          setMessages((prevState) => [...prevState, message]);
         })
         .catch((err) => setError(true));
     }
@@ -70,20 +74,19 @@ function ChatSection() {
     // eslint-disable-next-line
     socket.current.on("receive", (message) => {
       // eslint-disable-next-line
+      console.log(selectedConversation.id);
       if (selectedConversation.id) {
-        setConversation((prevState) => ({
-          ...prevState,
-          messages: [...prevState.messages, message],
-        }));
+        console.log("received");
+        setArrivalMessage(message);
       }
     });
     // eslint-disable-next-line
   }, [selectedConversation]);
 
-  const handleTypeMessage = (e) => {
-    const { name, value } = e.target;
-    setFormInfos((prevState) => ({ ...prevState, [name]: value }));
-  };
+  useEffect(() => {
+    arrivalMessage &&
+      setMessages((prevState) => [...prevState, arrivalMessage]);
+  }, [arrivalMessage]);
 
   useEffect(() => {
     const route = conversationsRoute;
@@ -113,7 +116,7 @@ function ChatSection() {
 
   useEffect(() => {
     scrollToBottom(true);
-  }, [conversation.messages]);
+  }, [messages]);
   return (
     <Container>
       {selectedConversation.id ? (
@@ -131,7 +134,7 @@ function ChatSection() {
           <div className="conversation-body">
             {loading ? (
               <LoadingMessages>Chargement des messages</LoadingMessages>
-            ) : conversation.messages.length <= 0 ? (
+            ) : messages.length <= 0 ? (
               <NoChat>
                 <div className="text">Aucun message, faites le premier pas</div>
                 <img
@@ -142,7 +145,7 @@ function ChatSection() {
               </NoChat>
             ) : (
               <div className="messages">
-                {conversation.messages.map((message, index) => {
+                {messages.map((message, index) => {
                   const text = message.text;
                   const mine = message.sender === logedUser.id;
                   const stamps = message.createdAt;
@@ -171,8 +174,7 @@ function ChatSection() {
                   autoFocus
                   type="text"
                   name="text"
-                  value={formInfos.text}
-                  onChange={handleTypeMessage}
+                  ref={messageRef}
                 />
                 <div>
                   <button>
