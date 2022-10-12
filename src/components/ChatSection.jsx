@@ -42,7 +42,7 @@ function ChatSection() {
       };
       const sendRoute = `${conversationsRoute}/message`;
       const sent = axios({
-        method: "post",
+        method: "put",
         url: sendRoute,
         headers: {
           Authorization: logedUser.token,
@@ -74,9 +74,7 @@ function ChatSection() {
     // eslint-disable-next-line
     socket.current.on("receive", (message) => {
       // eslint-disable-next-line
-      console.log(selectedConversation.id);
       if (selectedConversation.id) {
-        console.log("received");
         setArrivalMessage(message);
       }
     });
