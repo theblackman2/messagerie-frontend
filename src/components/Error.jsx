@@ -1,8 +1,11 @@
-import React from "react";
 import styled from "styled-components";
 import { RiCloseCircleFill } from "react-icons/ri";
 
 function Error({ close }) {
+  const logout = () => {
+    localStorage.clear();
+    window.location.reload(false);
+  };
   return (
     <Container>
       <div className="card">
@@ -17,6 +20,9 @@ function Error({ close }) {
             <li>Vous déconnecter et vous réconnecter</li>
           </ul>
         </div>
+        <button onClick={logout} className="btn btn-danger">
+          Se déconnecter
+        </button>
       </div>
     </Container>
   );
