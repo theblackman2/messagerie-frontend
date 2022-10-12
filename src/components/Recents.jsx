@@ -27,7 +27,6 @@ function Recents() {
 
     recents
       .then((response) => {
-        console.log(response.data);
         setRecents(response.data);
       })
       .catch((err) => setError(true))
