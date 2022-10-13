@@ -18,6 +18,7 @@ function App() {
   });
   const [error, setError] = useState(false);
   const socket = useRef();
+  const [sentMessage, setSentMessage] = useState(null);
 
   useEffect(() => {
     const host = process.env.REACT_APP_API_URL;
@@ -53,6 +54,8 @@ function App() {
         setSelectedConversation,
         setError,
         socket,
+        sentMessage,
+        setSentMessage,
       }}
     >
       <BrowserRouter>

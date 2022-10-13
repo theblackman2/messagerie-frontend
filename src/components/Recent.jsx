@@ -3,7 +3,8 @@ import styled from "styled-components";
 import appState from "../utils/state";
 
 function Recent({ recent }) {
-  const { logedUser, setSelectedConversation, socket } = useContext(appState);
+  const { logedUser, setSelectedConversation, socket, sentMessage } =
+    useContext(appState);
   const [recentMessage, setRecentMessage] = useState(
     recent.messages[recent.messages.length - 1]
   );
@@ -17,6 +18,12 @@ function Recent({ recent }) {
       if (contact._id === message.sender) setRecentMessage(message);
     });
   }, [socket, contact]);
+
+  useEffect(() => {
+    if (!sentMessage) return;
+    const to = sentMessage.to;
+    if (to === contact._id) setRecentMessage(sentMessage.message);
+  }, [sentMessage, contact._id]);
 
   return (
     <Container

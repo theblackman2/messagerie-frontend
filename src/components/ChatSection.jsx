@@ -10,7 +10,7 @@ import Sending from "./Sending";
 import Message from "./Message";
 
 function ChatSection() {
-  const { selectedConversation, logedUser, setError, socket } =
+  const { selectedConversation, logedUser, setError, socket, setSentMessage } =
     useContext(appState);
   const [conversation, setConversation] = useState({});
   const [loading, setLoading] = useState(true);
@@ -60,6 +60,10 @@ function ChatSection() {
           messageRef.current.value = "";
           setSending(false);
           socket.current.emit("send-msg", {
+            to: selectedConversation.id,
+            message: message,
+          });
+          setSentMessage({
             to: selectedConversation.id,
             message: message,
           });
