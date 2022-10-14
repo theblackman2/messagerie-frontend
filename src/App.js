@@ -7,7 +7,6 @@ import appState from "./utils/state";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { conversationsRoute, usersRoute } from "./utils/apiRoutes";
-import { getConversation } from "./utils/functions";
 
 function App() {
   // store all users and recent conversations
@@ -97,7 +96,7 @@ function App() {
       .finally(() => setLoadingConversations(false));
   }, [logedUser, logedIn]);
 
-  return loading ? (
+  return loading || loadingUsers ? (
     <div>Loading</div>
   ) : error ? (
     <Error close={() => setError(false)} />
@@ -116,6 +115,7 @@ function App() {
         socket,
         sentMessage,
         setSentMessage,
+        users,
       }}
     >
       <BrowserRouter>

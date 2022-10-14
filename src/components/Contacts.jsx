@@ -1,15 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
-import { usersRoute } from "../utils/apiRoutes";
-import axios from "axios";
 import appState from "../utils/state";
 import Contact from "./Contact";
 import { NoChat } from "./ChatSection";
 
 function Contacts() {
-  const { logedUser, setError } = useContext(appState);
-  const [contacts, setContacts] = useState([]);
-  const [loadingContacts, setLoadingContacts] = useState(true);
+  const { logedUser, users } = useContext(appState);
   const [copyinLink, setCopyingLink] = useState(false);
 
   const copyLink = () => {
@@ -20,36 +16,10 @@ function Contacts() {
       setCopyingLink(false);
     }, 3000);
   };
-  useEffect(() => {
-    const token = logedUser.token;
-    const users = axios({
-      method: "get",
-      url: usersRoute,
-      headers: {
-        Authorization: token,
-      },
-    });
-
-    users
-      .then((response) => setContacts(response.data))
-      .catch((err) => setError(true))
-      .finally(() => setLoadingContacts(false));
-  }, [logedUser.token, setError]);
   return (
     <Container>
-      {loadingContacts ? (
-        <ContactLoader>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-        </ContactLoader>
-      ) : contacts.length > 1 ? (
-        contacts.map((contact, index) => {
+      {users.length > 1 ? (
+        users.map((contact, index) => {
           // eslint-disable-next-line
           if (contact._id === logedUser.id) return;
           return <Contact key={index} contact={contact} />;
