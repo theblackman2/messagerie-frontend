@@ -7,12 +7,13 @@ import appState from "./utils/state";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { conversationsRoute, usersRoute } from "./utils/apiRoutes";
+import { getConversation } from "./utils/functions";
 
 function App() {
   // store all users and recent conversations
-  const [conversations, setConversations] = useState([]);
+  const [conversations, setConversations] = useState(null);
   const [loadingConversations, setLoadingConversations] = useState(true);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(null);
   const [loadingUsers, setLoadingUsers] = useState(true);
 
   const [logedIn, setLogedIn] = useState(false);
@@ -90,7 +91,7 @@ function App() {
     conversations
       .then((response) => {
         setConversations(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch(() => setError(true))
       .finally(() => setLoadingConversations(false));
