@@ -8,122 +8,71 @@ import { AiFillCamera } from "react-icons/ai";
 import { IoSend } from "react-icons/io5";
 import Sending from "./Sending";
 import Message from "./Message";
+import { scrollToBottom } from "../utils/functions";
 
 function ChatSection() {
-  const { selectedConversation, logedUser, setError, socket, setSentMessage } =
+  const { selectedConversation, logedUser, socket, currentConversation } =
     useContext(appState);
-  const [conversation, setConversation] = useState({});
-  const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const messageEndRef = useRef();
   const [messages, setMessages] = useState([]);
-  const [arrivalMessage, setArrivalMessage] = useState(null);
+
+  // store messages when selected a conversation
+  useEffect(() => {
+    if (!currentConversation) return;
+    setMessages(currentConversation.messages);
+  }, [currentConversation]);
 
   // store the text in message input
   const messageRef = useRef();
 
+  // scroll when update messages
   useEffect(() => {
-    if (conversation.messages) setMessages(conversation.messages);
-  }, [conversation]);
-
-  const scrollToBottom = (smooth) => {
-    messageEndRef.current?.scrollIntoView({
-      behavior: smooth ? "smooth" : "auto",
-    });
-  };
+    scrollToBottom(messageEndRef, true);
+  }, [messages]);
 
   const handleSend = (e) => {
     e.preventDefault();
-    if (messageRef.current.value) {
-      setSending(true);
-      const message = {
-        sender: logedUser.id,
-        text: messageRef.current.value,
-      };
-      const sendRoute = `${conversationsRoute}/message`;
-      const sent = axios({
-        method: "put",
-        url: sendRoute,
-        headers: {
-          Authorization: logedUser.token,
-        },
-        data: {
-          id: conversation._id,
-          message: message,
-        },
-      });
+    if (!messageRef.current.value) return;
+    setSending(true);
+    const message = {
+      sender: logedUser.id,
+      text: messageRef.current.value,
+    };
+    const sendRoute = `${conversationsRoute}/message`;
+    const sent = axios({
+      method: "put",
+      url: sendRoute,
+      headers: {
+        Authorization: logedUser.token,
+      },
+      data: {
+        id: currentConversation._id,
+        message: message,
+      },
+    });
 
-      sent
-        .then((response) => {
-          const message = response.data.data;
-          scrollToBottom(true);
-          messageRef.current.value = "";
-          setSending(false);
-          socket.current.emit("send-msg", {
-            conversation: conversation._id,
-            to: selectedConversation.id,
-            message: message,
-          });
-          setSentMessage({
-            to: selectedConversation.id,
-            message: message,
-          });
-          setMessages((prevState) => [...prevState, message]);
-        })
-        .catch((err) => setError(true));
-    }
+    sent
+      .then((response) => {
+        const message = response.data.data;
+        scrollToBottom(true);
+        messageRef.current.value = "";
+        setSending(false);
+        socket.current.emit("send-msg", {
+          conversation: selectedConversation.id,
+          to: selectedConversation.id,
+          message: message,
+        });
+        setMessages((prevState) => [...prevState, message]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  // eslint-disable-next-line
-  useEffect(() => {
-    // eslint-disable-next-line
-    socket.current.on("receive", (data) => {
-      // eslint-disable-next-line
-      if (selectedConversation.id) {
-        setArrivalMessage(data.message);
-      }
-    });
-    // eslint-disable-next-line
-  }, [selectedConversation]);
-
-  useEffect(() => {
-    if (!arrivalMessage) return;
-    if (arrivalMessage.sender !== selectedConversation.id) return;
-    setMessages((prevState) => [...prevState, arrivalMessage]);
-  }, [arrivalMessage, selectedConversation]);
-
-  useEffect(() => {
-    const route = conversationsRoute;
-    const token = logedUser.token;
-    if (selectedConversation.id) {
-      setLoading(true);
-      setConversation({});
-      const conversation = axios({
-        method: "post",
-        url: route,
-        headers: {
-          Authorization: token,
-        },
-        data: {
-          participants: [logedUser.id, selectedConversation.id],
-        },
-      });
-
-      conversation
-        .then((response) => {
-          setConversation(response.data);
-        })
-        .catch((err) => setError(true))
-        .finally(() => setLoading(false));
-    }
-  }, [selectedConversation, logedUser, setError]);
-
-  useEffect(() => {
-    scrollToBottom(true);
-  }, [messages]);
   return (
     <Container>
-      {selectedConversation.id ? (
+      {currentConversation ? (
         <>
           <div className="conversation-head">
             <img
@@ -136,9 +85,7 @@ function ChatSection() {
             </div>
           </div>
           <div className="conversation-body">
-            {loading ? (
-              <LoadingMessages>Chargement des messages</LoadingMessages>
-            ) : messages.length <= 0 ? (
+            {messages.length <= 0 ? (
               <NoChat>
                 <div className="text">Aucun message, faites le premier pas</div>
                 <img
@@ -347,5 +294,3 @@ export const NoChat = styled.div`
     text-align: center;
   }
 `;
-
-const LoadingMessages = styled.div``;

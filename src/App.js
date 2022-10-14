@@ -14,6 +14,16 @@ function App() {
   const [loadingConversations, setLoadingConversations] = useState(true);
   const [users, setUsers] = useState(null);
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [currentConversation, setCurrentConversation] = useState(null);
+  const [currentId, setCurrentId] = useState(null);
+
+  useEffect(() => {
+    if (!currentId) return;
+    setCurrentConversation(
+      conversations.find((conversation) => conversation._id === currentId)
+    );
+  }, [currentId, conversations]);
+  // console.log(currentConversation);
 
   const [logedIn, setLogedIn] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -117,6 +127,8 @@ function App() {
         setSentMessage,
         users,
         conversations,
+        currentConversation,
+        setCurrentId,
       }}
     >
       <BrowserRouter>

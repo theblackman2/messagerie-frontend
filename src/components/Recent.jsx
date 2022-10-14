@@ -3,8 +3,13 @@ import styled from "styled-components";
 import appState from "../utils/state";
 
 function Recent({ recent }) {
-  const { logedUser, setSelectedConversation, socket, sentMessage } =
-    useContext(appState);
+  const {
+    logedUser,
+    setSelectedConversation,
+    socket,
+    sentMessage,
+    setCurrentId,
+  } = useContext(appState);
   const [recentMessage, setRecentMessage] = useState(
     recent.messages[recent.messages.length - 1]
   );
@@ -15,7 +20,7 @@ function Recent({ recent }) {
 
   useEffect(() => {
     socket.current.on("receive", (data) => {
-      if(data.message.sender !== contact._id) return
+      if (data.message.sender !== contact._id) return;
       setRecentMessage(data.message);
     });
   }, [socket, contact]);
@@ -28,13 +33,14 @@ function Recent({ recent }) {
 
   return (
     <Container
-      onClick={() =>
+      onClick={() => {
         setSelectedConversation({
           id: contact._id,
           imageUrl: contact.imageUrl ? contact.imageUrl : "/uknown.png",
           name: contact.pseudo,
-        })
-      }
+        });
+        setCurrentId(recent._id);
+      }}
     >
       <img
         src={contact.imageUrl ? contact.imageUrl : "/uknown.png"}
