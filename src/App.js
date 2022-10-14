@@ -5,8 +5,17 @@ import Auth from "./pages/Auth";
 import Chats from "./pages/Chats";
 import appState from "./utils/state";
 import { io } from "socket.io-client";
+import axios from "axios";
+import { conversationsRoute, usersRoute } from "./utils/apiRoutes";
+import { getConversation } from "./utils/functions";
 
 function App() {
+  // store all users and recent conversations
+  const [conversations, setConversations] = useState(null);
+  const [loadingConversations, setLoadingConversations] = useState(true);
+  const [users, setUsers] = useState(null);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
   const [logedIn, setLogedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [logedUser, setLogedUser] = useState({});
@@ -25,6 +34,7 @@ function App() {
     socket.current = io(host);
   }, []);
 
+  // set logedin status if there is user loged in
   useEffect(() => {
     setLoading(true);
     const user = localStorage.getItem("user");
@@ -36,6 +46,56 @@ function App() {
     }
     setLoading(false);
   }, [logedIn]);
+
+  // get all users once loged in
+  useEffect(() => {
+    setUsers([]);
+    setLoadingUsers(true);
+    if (!logedIn) return;
+    const usersApiUrl = usersRoute;
+    const users = axios({
+      method: "get",
+      url: usersApiUrl,
+      headers: {
+        Authorization: logedUser.token,
+      },
+    });
+
+    users
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch(() => {
+        setError(true);
+      })
+      .finally(() => setLoadingUsers(false));
+  }, [logedUser, logedIn]);
+
+  // get all recent conversations once loged in
+  useEffect(() => {
+    if (!logedIn) return;
+    setConversations([]);
+    setLoadingConversations(true);
+
+    const conversations = axios({
+      method: "get",
+      url: `${conversationsRoute}/recents`,
+      headers: {
+        Authorization: logedUser.token,
+      },
+      params: {
+        id: logedUser.id,
+      },
+    });
+
+    conversations
+      .then((response) => {
+        setConversations(response.data);
+        // console.log(response.data);
+      })
+      .catch(() => setError(true))
+      .finally(() => setLoadingConversations(false));
+  }, [logedUser, logedIn]);
 
   return loading ? (
     <div>Loading</div>

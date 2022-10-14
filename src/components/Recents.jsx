@@ -8,9 +8,10 @@ import { ContactLoader } from "./Contacts";
 import { NoChat } from "./ChatSection";
 
 function Recents() {
-  const { logedUser, setShowContacts, setError } = useContext(appState);
+  const { logedUser, setShowContacts, setError, socket } = useContext(appState);
   const [recents, setRecents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [arrivalConversation, setArrivalConversation] = useState(null)
 
   useEffect(() => {
     const route = `${conversationsRoute}/recents`;
@@ -32,6 +33,18 @@ function Recents() {
       .catch((err) => setError(true))
       .finally(() => setLoading(false));
   }, [logedUser, setError]);
+
+  useEffect(() => {
+    socket.current.on("receive", (data) => {
+      if(data.conversation.messages.length > 1) return
+      setArrivalConversation(data.conversation)
+    })
+  }, [socket])
+
+  useEffect(() => {
+    if(!arrivalConversation) return
+    setRecents((prevState) => [arrivalConversation, ...prevState])
+  }, [arrivalConversation])
 
   return (
     <Container>
