@@ -6,15 +6,14 @@ import Chats from "./pages/Chats";
 import appState from "./utils/state";
 import { io } from "socket.io-client";
 import axios from "axios";
-import { usersRoute } from "./utils/apiRoutes";
+import { conversationsRoute, usersRoute } from "./utils/apiRoutes";
 
 function App() {
   // store all users and recent conversations
-  const [conversations, setConversations] = useState([])
-  const [loadingConversations, setLoadingConversations] = useState(true)
-  const [users, setUsers] = useState([])
-  const [loadingUsers, setLoadingUsers] = useState(true)
-
+  const [conversations, setConversations] = useState([]);
+  const [loadingConversations, setLoadingConversations] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
 
   const [logedIn, setLogedIn] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -34,6 +33,7 @@ function App() {
     socket.current = io(host);
   }, []);
 
+  // set logedin status if there is user loged in
   useEffect(() => {
     setLoading(true);
     const user = localStorage.getItem("user");
@@ -46,24 +46,55 @@ function App() {
     setLoading(false);
   }, [logedIn]);
 
+  // get all users once loged in
   useEffect(() => {
-    if (!logedIn) return
-    const usersApiUrl = usersRoute
+    setUsers([]);
+    setLoadingUsers(true);
+    if (!logedIn) return;
+    const usersApiUrl = usersRoute;
     const users = axios({
       method: "get",
       url: usersApiUrl,
       headers: {
         Authorization: logedUser.token,
-      }
-    })
+      },
+    });
 
-    users.then((response) => {
-      setUsers(response.data)
-      console.log(response)
-    }).catch(() => {
-      setError(true)
-    }).finally(() => setLoadingUsers(false))
-  }, [logedUser])
+    users
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch(() => {
+        setError(true);
+      })
+      .finally(() => setLoadingUsers(false));
+  }, [logedUser, logedIn]);
+
+  // get all recent conversations once loged in
+  useEffect(() => {
+    if (!logedIn) return;
+    setConversations([]);
+    setLoadingConversations(true);
+
+    const conversations = axios({
+      method: "get",
+      url: `${conversationsRoute}/recents`,
+      headers: {
+        Authorization: logedUser.token,
+      },
+      params: {
+        id: logedUser.id,
+      },
+    });
+
+    conversations
+      .then((response) => {
+        setConversations(response.data);
+        console.log(response.data);
+      })
+      .catch(() => setError(true))
+      .finally(() => setLoadingConversations(false));
+  }, [logedUser, logedIn]);
 
   return loading ? (
     <div>Loading</div>
