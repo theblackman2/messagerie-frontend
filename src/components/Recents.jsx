@@ -1,69 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import { conversationsRoute } from "../utils/apiRoutes";
 import appState from "../utils/state";
 import Recent from "./Recent";
-import { ContactLoader } from "./Contacts";
 import { NoChat } from "./ChatSection";
 
 function Recents() {
-  const { logedUser, setShowContacts, setError, socket } = useContext(appState);
-  const [recents, setRecents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [arrivalConversation, setArrivalConversation] = useState(null)
-
-  useEffect(() => {
-    const route = `${conversationsRoute}/recents`;
-    const recents = axios({
-      method: "get",
-      url: route,
-      headers: {
-        Authorization: logedUser.token,
-      },
-      params: {
-        id: logedUser.id,
-      },
-    });
-
-    recents
-      .then((response) => {
-        setRecents(response.data);
-      })
-      .catch((err) => setError(true))
-      .finally(() => setLoading(false));
-  }, [logedUser, setError]);
-
-  useEffect(() => {
-    socket.current.on("receive", (data) => {
-      if(data.conversation.messages.length > 1) return
-      setArrivalConversation(data.conversation)
-    })
-  }, [socket])
-
-  useEffect(() => {
-    if(!arrivalConversation) return
-    setRecents((prevState) => [arrivalConversation, ...prevState])
-  }, [arrivalConversation])
+  const { setShowContacts, conversations } = useContext(appState);
 
   return (
     <Container>
       <h2 className="recents-title">Récents</h2>
-      {loading ? (
-        <ContactLoader>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-          <div className="contact"></div>
-        </ContactLoader>
-      ) : recents.length > 0 ? (
-        recents.map((recent, index) => {
+      {conversations.length > 0 ? (
+        conversations.map((recent, index) => {
           // eslint-disable-next-line
           if (recent.messages.length <= 0) return;
           return <Recent key={index} recent={recent} />;

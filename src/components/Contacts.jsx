@@ -18,6 +18,7 @@ function Contacts() {
   };
   return (
     <Container>
+      <h2>Trouver quelqu'un</h2>
       {users.length > 1 ? (
         users.map((contact, index) => {
           // eslint-disable-next-line

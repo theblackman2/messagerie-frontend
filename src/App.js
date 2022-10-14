@@ -48,9 +48,9 @@ function App() {
 
   // get all users once loged in
   useEffect(() => {
+    if (!logedIn) return;
     setUsers([]);
     setLoadingUsers(true);
-    if (!logedIn) return;
     const usersApiUrl = usersRoute;
     const users = axios({
       method: "get",
@@ -96,7 +96,7 @@ function App() {
       .finally(() => setLoadingConversations(false));
   }, [logedUser, logedIn]);
 
-  return loading || loadingUsers ? (
+  return loading ? (
     <div>Loading</div>
   ) : error ? (
     <Error close={() => setError(false)} />
@@ -116,11 +116,25 @@ function App() {
         sentMessage,
         setSentMessage,
         users,
+        conversations,
       }}
     >
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={logedIn ? <Chats /> : <Auth />} />
+          <Route
+            path="/"
+            element={
+              logedIn ? (
+                loadingUsers || loadingConversations ? (
+                  <div>Loading</div>
+                ) : (
+                  <Chats />
+                )
+              ) : (
+                <Auth />
+              )
+            }
+          />
         </Routes>
       </BrowserRouter>
     </appState.Provider>
