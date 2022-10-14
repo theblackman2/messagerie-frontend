@@ -60,6 +60,7 @@ function ChatSection() {
           messageRef.current.value = "";
           setSending(false);
           socket.current.emit("send-msg", {
+            conversation: conversation._id,
             to: selectedConversation.id,
             message: message,
           });
@@ -76,10 +77,10 @@ function ChatSection() {
   // eslint-disable-next-line
   useEffect(() => {
     // eslint-disable-next-line
-    socket.current.on("receive", (message) => {
+    socket.current.on("receive", (data) => {
       // eslint-disable-next-line
       if (selectedConversation.id) {
-        setArrivalMessage(message);
+        setArrivalMessage(data.message);
       }
     });
     // eslint-disable-next-line

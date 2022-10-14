@@ -14,8 +14,9 @@ function Recent({ recent }) {
   )[0];
 
   useEffect(() => {
-    socket.current.on("receive", (message) => {
-      if (contact._id === message.sender) setRecentMessage(message);
+    socket.current.on("receive", (data) => {
+      if(data.message.sender !== contact._id) return
+      setRecentMessage(data.message);
     });
   }, [socket, contact]);
 
