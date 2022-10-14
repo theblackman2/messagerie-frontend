@@ -11,8 +11,13 @@ import Message from "./Message";
 import { scrollToBottom } from "../utils/functions";
 
 function ChatSection() {
-  const { selectedConversation, logedUser, socket, currentConversation } =
-    useContext(appState);
+  const {
+    selectedConversation,
+    logedUser,
+    socket,
+    currentConversation,
+    creatingConversation,
+  } = useContext(appState);
   const [sending, setSending] = useState(false);
   const messageEndRef = useRef();
   const [messages, setMessages] = useState([]);
@@ -85,7 +90,9 @@ function ChatSection() {
             </div>
           </div>
           <div className="conversation-body">
-            {messages.length <= 0 ? (
+            {creatingConversation ? (
+              <div>Creating conversation</div>
+            ) : messages.length <= 0 ? (
               <NoChat>
                 <div className="text">Aucun message, faites le premier pas</div>
                 <img

@@ -17,6 +17,7 @@ function App() {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [currentConversation, setCurrentConversation] = useState(null);
   const [currentId, setCurrentId] = useState(null);
+  const [creatingConversation, setCreatingConversation] = useState(false);
 
   useEffect(() => {
     if (!currentId) return;
@@ -117,8 +118,31 @@ function App() {
       conversations
     );
     if (conversation) setCurrentConversation(conversation);
-    else console.log("not found");
-  }, [selectedConversation]);
+    else {
+      const route = conversationsRoute;
+      setCreatingConversation(true);
+      const createdConversation = axios({
+        method: "post",
+        url: route,
+        headers: {
+          Authorization: logedUser.token,
+        },
+        data: {
+          participants: [logedUser.id, selectedConversation.id],
+        },
+      });
+
+      createdConversation
+        .then((response) =>
+          setConversations((prevState) => [response.data, ...prevState])
+        )
+        .catch((error) => {
+          console.log(error);
+          setError(true);
+        })
+        .finally(() => setCreatingConversation(false));
+    }
+  }, [selectedConversation, conversations, logedIn, logedUser]);
 
   return loading ? (
     <div>Loading</div>
@@ -143,6 +167,7 @@ function App() {
         conversations,
         currentConversation,
         setCurrentId,
+        creatingConversation,
       }}
     >
       <BrowserRouter>
