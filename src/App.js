@@ -7,6 +7,7 @@ import appState from "./utils/state";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { conversationsRoute, usersRoute } from "./utils/apiRoutes";
+import { getConversationFromIds } from "./utils/functions";
 
 function App() {
   // store all users and recent conversations
@@ -105,6 +106,19 @@ function App() {
       .catch(() => setError(true))
       .finally(() => setLoadingConversations(false));
   }, [logedUser, logedIn]);
+
+  // get conversation from contacts
+  useEffect(() => {
+    if (!selectedConversation.id) return;
+    if (!logedIn) return;
+    const conversation = getConversationFromIds(
+      logedUser.id,
+      selectedConversation.id,
+      conversations
+    );
+    if (conversation) setCurrentConversation(conversation);
+    else console.log("not found");
+  }, [selectedConversation]);
 
   return loading ? (
     <div>Loading</div>
