@@ -17,6 +17,7 @@ function ChatSection() {
     socket,
     currentConversation,
     creatingConversation,
+    setSentMessage,
   } = useContext(appState);
   const [sending, setSending] = useState(false);
   const messageEndRef = useRef();
@@ -69,6 +70,10 @@ function ChatSection() {
           message: message,
         });
         setMessages((prevState) => [...prevState, message]);
+        setSentMessage({
+          conversationId: currentConversation._id,
+          message: message,
+        });
       })
       .catch((err) => {
         console.log(err);

@@ -18,15 +18,6 @@ function App() {
   const [currentConversation, setCurrentConversation] = useState(null);
   const [currentId, setCurrentId] = useState(null);
   const [creatingConversation, setCreatingConversation] = useState(false);
-
-  useEffect(() => {
-    if (!currentId) return;
-    setCurrentConversation(
-      conversations.find((conversation) => conversation._id === currentId)
-    );
-  }, [currentId, conversations]);
-  // console.log(currentConversation);
-
   const [logedIn, setLogedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [logedUser, setLogedUser] = useState({});
@@ -39,6 +30,13 @@ function App() {
   const [error, setError] = useState(false);
   const socket = useRef();
   const [sentMessage, setSentMessage] = useState(null);
+
+  useEffect(() => {
+    if (!currentId) return;
+    setCurrentConversation(
+      conversations.find((conversation) => conversation._id === currentId)
+    );
+  }, [currentId, conversations]);
 
   useEffect(() => {
     const host = process.env.REACT_APP_API_URL;
@@ -161,13 +159,13 @@ function App() {
         setSelectedConversation,
         setError,
         socket,
-        sentMessage,
         setSentMessage,
         users,
         conversations,
         currentConversation,
         setCurrentId,
         creatingConversation,
+        sentMessage,
       }}
     >
       <BrowserRouter>

@@ -27,9 +27,9 @@ function Recent({ recent }) {
 
   useEffect(() => {
     if (!sentMessage) return;
-    const to = sentMessage.to;
-    if (to === contact._id) setRecentMessage(sentMessage.message);
-  }, [sentMessage, contact._id]);
+    const to = sentMessage.conversationId;
+    if (to === recent._id) setRecentMessage(sentMessage.message);
+  }, [sentMessage, recent._id]);
 
   return (
     <Container
