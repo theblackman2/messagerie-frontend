@@ -152,6 +152,13 @@ function App() {
     }
   }, [selectedConversation, conversations, logedIn, logedUser]);
 
+  // update conversation after receive message
+  useEffect(() => {
+    socket.current.on("receive", (data) => {
+      setConversations((prevState) => updateConversations(data, prevState));
+    });
+  }, [socket]);
+
   return loading ? (
     <div>Loading</div>
   ) : error ? (
