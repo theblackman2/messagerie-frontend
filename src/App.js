@@ -161,6 +161,8 @@ function App() {
     });
   }, [socket]);
 
+  // don't load
+
   return loading ? (
     <div>Loading</div>
   ) : error ? (
