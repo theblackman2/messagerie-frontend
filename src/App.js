@@ -49,7 +49,7 @@ function App() {
   }, [currentId, conversations]);
 
   useEffect(() => {
-    const host = process.env.REACT_APP_API_URL;
+    const host = "https://messagerie-backend.vercel.app";
     socket.current = io(host);
   }, []);
 
