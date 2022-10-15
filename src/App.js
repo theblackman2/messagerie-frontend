@@ -35,6 +35,17 @@ function App() {
   const socket = useRef();
   const [sentMessage, setSentMessage] = useState(null);
   const [newUser, setNewUser] = useState(null);
+  const [notification, setNotification] = useState(null);
+
+  // clear notification after 3 seconds
+  useEffect(() => {
+    if (!notification) return;
+    const interval = setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [notification]);
 
   // update conversations after sent message
   useEffect(() => {
@@ -163,8 +174,11 @@ function App() {
   useEffect(() => {
     socket.current.on("receive", (data) => {
       setConversations((prevState) => updateConversations(data, prevState));
+      setNotification(`Nouveau message de ${data.sender}`);
     });
   }, [socket]);
+
+  const closeNotification = () => setNotification(null);
 
   // store a new joined user
   useEffect(() => {
@@ -203,6 +217,7 @@ function App() {
         setCurrentId,
         creatingConversation,
         sentMessage,
+        closeNotification,
       }}
     >
       <BrowserRouter>
@@ -214,7 +229,7 @@ function App() {
                 loadingUsers || loadingConversations ? (
                   <div>Loading</div>
                 ) : (
-                  <Chats />
+                  <Chats notification={notification} />
                 )
               ) : (
                 <Auth />

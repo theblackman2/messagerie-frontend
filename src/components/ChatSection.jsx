@@ -66,6 +66,7 @@ function ChatSection() {
         messageRef.current.value = "";
         setSending(false);
         socket.current.emit("send-msg", {
+          sender: logedUser.pseudo,
           conversation: currentConversation._id,
           to: selectedConversation.id,
           message: message,
