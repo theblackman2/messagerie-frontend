@@ -12,6 +12,7 @@ import {
   getConversationFromIds,
   updateConversations,
 } from "./utils/functions";
+import Loader from "./components/Loader";
 
 function App() {
   // store all users and recent conversations
@@ -228,8 +229,9 @@ function App() {
             element={
               logedIn ? (
                 loadingUsers || loadingConversations ? (
-                  <div>Loading</div>
+                  <Loader />
                 ) : (
+                  // <Loader />
                   <Chats notification={notification} />
                 )
               ) : (
