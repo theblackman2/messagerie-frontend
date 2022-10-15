@@ -6,13 +6,13 @@ function Contact({ contact }) {
   const { setSelectedConversation } = useContext(appState);
   return (
     <Container
-      onClick={() =>
+      onClick={() => {
         setSelectedConversation({
-          id: contact._id,
+          id: contact._id ? contact._id : contact.id,
           imageUrl: contact.imageUrl ? contact.imageUrl : "/uknown.png",
           name: contact.pseudo,
-        })
-      }
+        });
+      }}
     >
       <div className="contact">
         <img

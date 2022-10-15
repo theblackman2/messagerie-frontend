@@ -54,3 +54,13 @@ export const updateConversations = (toUpdate, conversations) => {
   });
   return updatedConversations;
 };
+
+/**
+ *
+ * @param {Object} contact
+ * @param {Array} contacts
+ */
+export const addContact = (contact, contacts) => {
+  if (!contacts) return [contact];
+  return [contact, ...contacts];
+};

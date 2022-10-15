@@ -7,7 +7,11 @@ import appState from "./utils/state";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { conversationsRoute, usersRoute } from "./utils/apiRoutes";
-import { getConversationFromIds, updateConversations } from "./utils/functions";
+import {
+  addContact,
+  getConversationFromIds,
+  updateConversations,
+} from "./utils/functions";
 
 function App() {
   // store all users and recent conversations
@@ -30,6 +34,7 @@ function App() {
   const [error, setError] = useState(false);
   const socket = useRef();
   const [sentMessage, setSentMessage] = useState(null);
+  const [newUser, setNewUser] = useState(null);
 
   // update conversations after sent message
   useEffect(() => {
@@ -161,7 +166,18 @@ function App() {
     });
   }, [socket]);
 
-  // don't load
+  // store a new joined user
+  useEffect(() => {
+    socket.current.on("user-joined", (data) => {
+      if (data.id === logedUser.id) return;
+      setNewUser(data);
+    });
+  }, [socket, logedUser]);
+
+  useEffect(() => {
+    if (!newUser) return;
+    setUsers((prevState) => addContact(newUser, prevState));
+  }, [newUser]);
 
   return loading ? (
     <div>Loading</div>

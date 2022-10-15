@@ -5,7 +5,7 @@ import { registerRoute } from "../utils/apiRoutes";
 import appState from "../utils/state";
 
 function SignupForm() {
-  const { setLogedIn, setLogedUser, setError } = useContext(appState);
+  const { setLogedIn, setLogedUser, setError, socket } = useContext(appState);
   const [formInfos, setFormInfos] = useState({
     pseudo: "",
     password: "",
@@ -55,6 +55,7 @@ function SignupForm() {
             ]);
           }
           const user = response.data.user;
+          socket.current.emit("first-time", user);
           localStorage.setItem("user", JSON.stringify(user));
           setLogedUser(user);
           setLogedIn(true);
