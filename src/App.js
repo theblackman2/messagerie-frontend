@@ -191,6 +191,7 @@ function App() {
   useEffect(() => {
     if (!newUser) return;
     setUsers((prevState) => addContact(newUser, prevState));
+    setNotification(`${newUser.pseudo} a rejoint l'application`);
   }, [newUser]);
 
   return loading ? (
