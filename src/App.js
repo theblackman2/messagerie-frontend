@@ -7,7 +7,7 @@ import appState from "./utils/state";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { conversationsRoute, usersRoute } from "./utils/apiRoutes";
-import { getConversationFromIds } from "./utils/functions";
+import { getConversationFromIds, updateConversations } from "./utils/functions";
 
 function App() {
   // store all users and recent conversations
@@ -31,6 +31,16 @@ function App() {
   const socket = useRef();
   const [sentMessage, setSentMessage] = useState(null);
 
+  // update conversations after sent message
+  useEffect(() => {
+    if (!sentMessage) return;
+    setConversations((prevState) =>
+      updateConversations(sentMessage, prevState)
+    );
+    // eslint-disable-next-line
+  }, [sentMessage]);
+
+  // change conversation in chat section
   useEffect(() => {
     if (!currentId) return;
     setCurrentConversation(

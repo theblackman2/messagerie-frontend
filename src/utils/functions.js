@@ -37,3 +37,20 @@ export const getConversationFromIds = (
   );
   return conversation;
 };
+
+/**
+ *
+ * @param {Object} toUpdate
+ * @param {Array} conversations
+ */
+export const updateConversations = (toUpdate, conversations) => {
+  const updatedConversations = conversations.map((conversation) => {
+    if (conversation._id !== toUpdate.conversationId) return conversation;
+    const updated = {
+      ...conversation,
+      messages: [...conversation.messages, toUpdate.message],
+    };
+    return updated;
+  });
+  return updatedConversations;
+};
