@@ -50,7 +50,9 @@ function App() {
 
   useEffect(() => {
     const host = process.env.REACT_APP_API_URL;
-    socket.current = io(host);
+    socket.current = io(host, {
+      transports: ["websocket"],
+    });
   }, []);
 
   // set logedin status if there is user loged in
