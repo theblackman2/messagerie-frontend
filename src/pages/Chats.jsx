@@ -1,25 +1,19 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 // import appState from "../utils/state";
 import styled from "styled-components";
 import ChatSection from "../components/ChatSection";
 import ContactsSection from "../components/ContactsSection";
-import Error from "../components/Error";
 import Sidebar from "../components/Sidebar";
 import { AiFillCloseCircle } from "react-icons/ai";
 import appState from "../utils/state";
+import Settings from "../components/Settings";
 
 function Chats({ notification }) {
-  const [error, setError] = useState(false);
-  const { closeNotification } = useContext(appState);
+  const { closeNotification, setting } = useContext(appState);
 
-  const closeError = () => setError(false);
   return (
     <Container>
-      {error && (
-        <div className="error-handle">
-          <Error close={closeError} />
-        </div>
-      )}
+      {setting && <Settings className="settings" />}
       {notification && (
         <Notification>
           <div className="content">
@@ -53,6 +47,7 @@ const Container = styled.div`
   display: flex;
   gap: 1rem;
   background-color: #eaeaea;
+  position: relative;
 
   .side-bar {
     width: 20%;
@@ -64,14 +59,6 @@ const Container = styled.div`
 
   .chat-section {
     width: 50%;
-  }
-
-  .error-handle {
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    top: 0;
-    left: 0;
   }
 `;
 

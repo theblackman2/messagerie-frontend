@@ -37,6 +37,7 @@ function App() {
   const [sentMessage, setSentMessage] = useState(null);
   const [newUser, setNewUser] = useState(null);
   const [notification, setNotification] = useState(null);
+  const [setting, setSetting] = useState(false);
 
   // clear notification after 3 seconds
   useEffect(() => {
@@ -196,7 +197,7 @@ function App() {
   }, [newUser]);
 
   return loading ? (
-    <div>Loading</div>
+    <Loader />
   ) : error ? (
     <Error close={() => setError(false)} />
   ) : (
@@ -220,6 +221,8 @@ function App() {
         creatingConversation,
         sentMessage,
         closeNotification,
+        setting,
+        setSetting,
       }}
     >
       <BrowserRouter>

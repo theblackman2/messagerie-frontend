@@ -6,8 +6,14 @@ import { MdContactPage } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 
 function Sidebar() {
-  const { logedUser, setLogedIn, showContacts, setShowContacts, socket } =
-    useContext(appState);
+  const {
+    logedUser,
+    setLogedIn,
+    showContacts,
+    setShowContacts,
+    socket,
+    // setSetting,
+  } = useContext(appState);
   const disconnect = () => {
     localStorage.removeItem("user");
     setLogedIn(false);
@@ -24,6 +30,7 @@ function Sidebar() {
     <Container showContacts={showContacts}>
       <div className="sidebar-top">
         <img
+          // onClick={() => setSetting(true)}
           className="user-avatar"
           src={logedUser.imagUrl ? logedUser.imagUrl : "/uknown.png"}
           alt={`${logedUser.pseudo} avatar`}
@@ -76,6 +83,7 @@ const Container = styled.div`
       width: 100px;
       height: 100px;
       border-radius: 50%;
+      cursor: pointer;
     }
 
     .switches {
