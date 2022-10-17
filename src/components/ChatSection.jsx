@@ -9,6 +9,7 @@ import { IoSend } from "react-icons/io5";
 import Sending from "./Sending";
 import Message from "./Message";
 import { scrollToBottom } from "../utils/functions";
+import EmojiPicker from "emoji-picker-react";
 
 function ChatSection() {
   const {
@@ -23,6 +24,7 @@ function ChatSection() {
   const [sending, setSending] = useState(false);
   const messageEndRef = useRef();
   const [messages, setMessages] = useState([]);
+  const [pickingEmoji, setPickingEmoji] = useState(false);
 
   // store messages when selected a conversation
   useEffect(() => {
@@ -40,6 +42,7 @@ function ChatSection() {
 
   const handleSend = (e) => {
     e.preventDefault();
+    setPickingEmoji(false);
     if (!messageRef.current.value) return;
     setSending(true);
     const message = {
@@ -134,6 +137,17 @@ function ChatSection() {
           </div>
           <div className="conversation-foot">
             <form onSubmit={handleSend}>
+              {pickingEmoji && (
+                <div className="emoji-pick">
+                  <EmojiPicker
+                    onEmojiClick={(emoji) =>
+                      (messageRef.current.value += emoji.emoji)
+                    }
+                    height={350}
+                    width={300}
+                  />
+                </div>
+              )}
               <div className="inputs">
                 <input
                   placeholder="Ecrire un message"
@@ -143,12 +157,15 @@ function ChatSection() {
                   ref={messageRef}
                 />
                 <div>
-                  <button>
+                  <div
+                    className="emoji-btn"
+                    onClick={() => setPickingEmoji((prevState) => !prevState)}
+                  >
                     <BsFillEmojiSmileFill />
-                  </button>
-                  <button>
+                  </div>
+                  <div className="camera-btn">
                     <AiFillCamera />
-                  </button>
+                  </div>
                 </div>
               </div>
               <button className="send" type="submit">
@@ -233,6 +250,18 @@ const Container = styled.div`
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: relative;
+
+      .emoji-btn,
+      .camera-btn {
+        cursor: pointer;
+      }
+
+      .emoji-pick {
+        position: absolute;
+        top: -350px;
+        right: 0;
+      }
 
       .inputs {
         width: calc(90% - 16px);
