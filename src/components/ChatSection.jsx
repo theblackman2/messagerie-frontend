@@ -11,6 +11,7 @@ import Message from "./Message";
 import { scrollToBottom } from "../utils/functions";
 import EmojiPicker from "emoji-picker-react";
 import ImagePreview from "./ImagePreview";
+import { GrLinkBottom } from "react-icons/gr";
 
 function ChatSection() {
   const {
@@ -157,6 +158,12 @@ function ChatSection() {
                 })}
               </div>
             )}
+            <button
+              onClick={() => scrollToBottom(messageEndRef, true)}
+              className="go-bottom"
+            >
+              <GrLinkBottom />
+            </button>
             <div ref={messageEndRef} />
           </div>
           <div className="conversation-foot">
@@ -238,6 +245,15 @@ const Container = styled.div`
     overflow-y: scroll;
     max-height: calc(100% - 130px);
     padding: 1rem 0;
+
+    .go-bottom {
+      position: absolute;
+      bottom: 80px;
+      font-weight: bold;
+      font-size: 20px;
+      right: 1rem;
+      z-index: 20;
+    }
 
     .messages {
       display: flex;

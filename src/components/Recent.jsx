@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import appState from "../utils/state";
+import { BsFillImageFill } from "react-icons/bs";
 
 function Recent({ recent }) {
   const {
@@ -51,8 +52,10 @@ function Recent({ recent }) {
         <h4 className="recent-name">{contact.pseudo}</h4>
         <p className="recent-message">
           {recentMessage.sender === logedUser.id && "Vous: "}
-          {recentMessage.text.substring(0, 20)}
-          {recentMessage.text.length > 19 && "..."}
+          {!recentMessage.imageUrl && recentMessage.text.substring(0, 20)}
+          {!recentMessage.imageUrl && recentMessage.text.length > 19 && "..."}
+          {recentMessage.imageUrl && <BsFillImageFill className="image-show" />}
+          {recentMessage.imageUrl && "Photo"}
         </p>
       </div>
     </Container>
@@ -79,5 +82,11 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 3px;
+
+    .recent-infos {
+      .image-show {
+        color: black;
+      }
+    }
   }
 `;
