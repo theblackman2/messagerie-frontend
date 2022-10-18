@@ -14,6 +14,7 @@ function SignupForm() {
   const [errors, setErrors] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
+  // handle when the form changes:
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormInfos((prevState) => ({ ...prevState, [name]: value }));
