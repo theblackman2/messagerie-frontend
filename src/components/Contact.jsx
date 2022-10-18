@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import appState from "../utils/state";
+import { Image } from "cloudinary-react";
 
 function Contact({ contact }) {
   const { setSelectedConversation } = useContext(appState);
@@ -15,11 +16,21 @@ function Contact({ contact }) {
       }}
     >
       <div className="contact">
-        <img
-          src={contact.imageUrl ? contact.imageUrl : "/uknown.png"}
-          alt={`${contact.pseudo} avatar`}
-          className="contact-avatar"
-        />
+        {!contact.imageUrl && (
+          <img
+            src={"/uknown.png"}
+            alt={`${contact.pseudo} avatar`}
+            className="contact-avatar"
+          />
+        )}
+        {contact.imageUrl && (
+          <Image
+            width="50"
+            className="avatar"
+            cloudName={process.env.REACT_APP_CLOUD_NAME}
+            publicId={contact.imageUrl}
+          />
+        )}
         <h4 className="contact-name">{contact.pseudo}</h4>
       </div>
     </Container>

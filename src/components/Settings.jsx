@@ -3,6 +3,7 @@ import styled from "styled-components";
 import appState from "../utils/state";
 import { AiFillCloseCircle } from "react-icons/ai";
 import ChangeSettings from "./ChangeSettings";
+import { Image } from "cloudinary-react";
 
 function Settings() {
   const { logedUser, setSetting } = useContext(appState);
@@ -17,12 +18,21 @@ function Settings() {
         </button>
         <h2 className="title">Paramètres</h2>
         <div className="set-col">
-          <img
-            width={100}
-            height={100}
-            src={logedUser.imageUrl ? logedUser.imageUrl : "/uknown.png"}
-            alt={`${logedUser.pseudo} avatar`}
-          />
+          {!logedUser.imageUrl && (
+            <img
+              width={100}
+              height={100}
+              src={"/uknown.png"}
+              alt={`${logedUser.pseudo} avatar`}
+            />
+          )}
+          {logedUser.imageUrl && (
+            <Image
+              width="100"
+              cloudName={process.env.REACT_APP_CLOUD_NAME}
+              publicId={logedUser.imageUrl}
+            />
+          )}
           <button
             onClick={() => setType("profileImg")}
             className="btn btn-primary"
@@ -32,11 +42,11 @@ function Settings() {
         </div>
         <div className="set">
           <h3>{logedUser.pseudo}</h3>
-          <button onClick={() => setType("pseudo")} className="btn btn-primary">
+          <button onClick={() => null} className="btn btn-primary">
             Modifier
           </button>
         </div>
-        <button onClick={() => setType("password")} className="btn btn-danger">
+        <button onClick={() => null} className="btn btn-danger">
           Modifier le mot de passe
         </button>
       </div>

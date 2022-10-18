@@ -12,6 +12,7 @@ import { scrollToBottom } from "../utils/functions";
 import EmojiPicker from "emoji-picker-react";
 import ImagePreview from "./ImagePreview";
 import { GrLinkBottom } from "react-icons/gr";
+import { Image } from "cloudinary-react";
 
 function ChatSection() {
   const {
@@ -114,11 +115,20 @@ function ChatSection() {
       {currentConversation ? (
         <>
           <div className="conversation-head">
-            <img
-              src={selectedConversation.imageUrl}
-              alt={`${selectedConversation.name} avatar`}
-              className="conversation-avatar"
-            />
+            {selectedConversation.imageUrl === "/uknown.png" ? (
+              <img
+                src={selectedConversation.imageUrl}
+                alt={`${selectedConversation.name} avatar`}
+                className="conversation-avatar"
+              />
+            ) : (
+              <Image
+                width="60"
+                className="conversation-avatar"
+                cloudName={process.env.REACT_APP_CLOUD_NAME}
+                publicId={selectedConversation.imageUrl}
+              />
+            )}
             <div className="conversation-name">
               <h3 className="name">{selectedConversation.name}</h3>
             </div>

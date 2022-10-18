@@ -4,6 +4,7 @@ import appState from "../utils/state";
 import { AiFillMessage } from "react-icons/ai";
 import { MdContactPage } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
+import { Image } from "cloudinary-react";
 
 function Sidebar() {
   const {
@@ -12,7 +13,7 @@ function Sidebar() {
     showContacts,
     setShowContacts,
     socket,
-    // setSetting,
+    setSetting,
   } = useContext(appState);
   const disconnect = () => {
     localStorage.clear();
@@ -30,12 +31,23 @@ function Sidebar() {
   return (
     <Container showContacts={showContacts}>
       <div className="sidebar-top">
-        <img
-          // onClick={() => setSetting(true)}
-          className="user-avatar"
-          src={logedUser.imagUrl ? logedUser.imagUrl : "/uknown.png"}
-          alt={`${logedUser.pseudo} avatar`}
-        />
+        {!logedUser.imageUrl && (
+          <img
+            onClick={() => setSetting(true)}
+            className="user-avatar"
+            src={"/uknown.png"}
+            alt={`${logedUser.pseudo} avatar`}
+          />
+        )}
+        {logedUser.imageUrl && (
+          <Image
+            onClick={() => setSetting(true)}
+            className="user-avatar"
+            width="100"
+            cloudName={process.env.REACT_APP_CLOUD_NAME}
+            publicId={logedUser.imageUrl}
+          />
+        )}
         <div className="switches">
           <button
             onClick={() => setShowContacts(false)}

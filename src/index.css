@@ -38,6 +38,7 @@ code {
   border-radius: 4px;
   font-weight: bold;
   transition: 0.5s;
+  cursor: pointer;
 }
 
 .btn-primary {

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import appState from "../utils/state";
 import { BsFillImageFill } from "react-icons/bs";
+import { Image } from "cloudinary-react";
 
 function Recent({ recent }) {
   const {
@@ -43,11 +44,22 @@ function Recent({ recent }) {
         setCurrentId(recent._id);
       }}
     >
-      <img
-        src={contact.imageUrl ? contact.imageUrl : "/uknown.png"}
-        alt={`${contact.pseudo} avatar`}
-        className="avatar"
-      />
+      {!contact.imageUrl && (
+        <img
+          src={"/uknown.png"}
+          alt={`${contact.pseudo} avatar`}
+          className="avatar"
+        />
+      )}
+      {contact.imageUrl && (
+        <Image
+          width="50"
+          className="avatar"
+          cloudName={process.env.REACT_APP_CLOUD_NAME}
+          publicId={contact.imageUrl}
+        />
+      )}
+
       <div className="recent-infos">
         <h4 className="recent-name">{contact.pseudo}</h4>
         <p className="recent-message">
