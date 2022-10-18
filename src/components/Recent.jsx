@@ -55,7 +55,7 @@ function Recent({ recent }) {
           {!recentMessage.imageUrl && recentMessage.text.substring(0, 20)}
           {!recentMessage.imageUrl && recentMessage.text.length > 19 && "..."}
           {recentMessage.imageUrl && <BsFillImageFill className="image-show" />}
-          {recentMessage.imageUrl && "Photo"}
+          {recentMessage.imageUrl && "  Photo"}
         </p>
       </div>
     </Container>
