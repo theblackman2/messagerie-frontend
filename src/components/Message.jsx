@@ -1,13 +1,24 @@
 import React from "react";
 import styled from "styled-components";
+import { Image } from "cloudinary-react";
 
 function Message({ image, text, mine, date }) {
   return (
     <Container mine={mine}>
-      <div className="text">
-        {text}
-        <span className="dir"></span>
-      </div>
+      {image && (
+        <Image
+          className="chat-img"
+          width="60%"
+          cloudName={process.env.REACT_APP_CLOUD_NAME}
+          publicId={image}
+        />
+      )}
+      {text && (
+        <div className="text">
+          {text}
+          <span className="dir"></span>
+        </div>
+      )}
       <p className="date">{date}</p>
     </Container>
   );
@@ -23,6 +34,10 @@ const Container = styled.div`
   max-width: 80%;
   margin-left: ${({ mine }) => (mine ? "auto" : "20px")};
   margin-right: ${({ mine }) => (!mine ? "auto" : "20px")};
+  .chat-img {
+    margin-left: ${({ mine }) => (mine ? "auto" : "20px")};
+    margin-right: ${({ mine }) => (!mine ? "auto" : "20px")};
+  }
   .text {
     padding: 10px 20px;
     display: flex;

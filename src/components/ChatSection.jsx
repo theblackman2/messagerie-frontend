@@ -10,6 +10,7 @@ import Sending from "./Sending";
 import Message from "./Message";
 import { scrollToBottom } from "../utils/functions";
 import EmojiPicker from "emoji-picker-react";
+import ImagePreview from "./ImagePreview";
 
 function ChatSection() {
   const {
@@ -25,6 +26,8 @@ function ChatSection() {
   const messageEndRef = useRef();
   const [messages, setMessages] = useState([]);
   const [pickingEmoji, setPickingEmoji] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewLink, setPreviewLink] = useState(null);
 
   // store messages when selected a conversation
   useEffect(() => {
@@ -35,19 +38,28 @@ function ChatSection() {
   // store the text in message input
   const messageRef = useRef();
 
+  // store a choosen image
+  const imageRef = useRef();
+
   // scroll when update messages
   useEffect(() => {
     scrollToBottom(messageEndRef, true);
   }, [messages]);
 
+  const cancelImage = () => {
+    imageRef.current.value = "";
+    setSelectedFile(null);
+  };
+
   const handleSend = (e) => {
     e.preventDefault();
     setPickingEmoji(false);
-    if (!messageRef.current.value) return;
+    if (!messageRef.current.value && !imageRef.current.value) return;
     setSending(true);
     const message = {
       sender: logedUser.id,
-      text: messageRef.current.value,
+      text: messageRef.current.value ? messageRef.current.value : "",
+      imageUrl: previewLink ? previewLink : "",
     };
     const sendRoute = `${conversationsRoute}/message`;
     const sent = axios({
@@ -67,6 +79,7 @@ function ChatSection() {
         const message = response.data.data;
         scrollToBottom(true);
         messageRef.current.value = "";
+        cancelImage();
         setSending(false);
         socket.current.emit("send-msg", {
           sender: logedUser.pseudo,
@@ -85,6 +98,15 @@ function ChatSection() {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    if (!selectedFile) return setPreviewLink(null);
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onloadend = () => {
+      setPreviewLink(reader.result);
+    };
+  }, [selectedFile]);
 
   return (
     <Container>
@@ -122,12 +144,14 @@ function ChatSection() {
                   const date = stampsArray[0].split("-").reverse().join("/");
                   const time = stampsArray[1].split(".")[0];
                   const finalDate = `Le ${date} à ${time}`;
+                  const image = message.imageUrl;
                   return (
                     <Message
                       key={index}
                       text={text}
                       mine={mine}
                       date={finalDate}
+                      image={image}
                     />
                   );
                 })}
@@ -137,6 +161,9 @@ function ChatSection() {
           </div>
           <div className="conversation-foot">
             <form onSubmit={handleSend}>
+              {previewLink && (
+                <ImagePreview cancel={cancelImage} image={previewLink} />
+              )}
               {pickingEmoji && (
                 <div className="emoji-pick">
                   <EmojiPicker
@@ -156,6 +183,14 @@ function ChatSection() {
                   name="text"
                   ref={messageRef}
                 />
+                <input
+                  ref={imageRef}
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  name="image"
+                  onChange={(e) => setSelectedFile(e.target.files[0])}
+                  className="image-input"
+                />
                 <div>
                   <div
                     className="emoji-btn"
@@ -164,7 +199,7 @@ function ChatSection() {
                     <BsFillEmojiSmileFill />
                   </div>
                   <div className="camera-btn">
-                    <AiFillCamera />
+                    <AiFillCamera onClick={() => imageRef.current.click()} />
                   </div>
                 </div>
               </div>
@@ -271,6 +306,10 @@ const Container = styled.div`
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        .image-input {
+          display: none;
+        }
 
         > div {
           width: 10%;

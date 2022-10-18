@@ -15,8 +15,9 @@ function Sidebar() {
     // setSetting,
   } = useContext(appState);
   const disconnect = () => {
-    localStorage.removeItem("user");
+    localStorage.clear();
     setLogedIn(false);
+    window.location.reload();
   };
 
   // eslint-disable-next-line
