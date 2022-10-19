@@ -4,7 +4,7 @@ import appState from "../utils/state";
 import { AiFillMessage } from "react-icons/ai";
 import { MdContactPage } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
-import { Image } from "cloudinary-react";
+import CloudinaryImage from "./CloudinaryImage";
 
 function Sidebar() {
   const {
@@ -40,11 +40,10 @@ function Sidebar() {
           />
         )}
         {logedUser.imageUrl && (
-          <Image
-            onClick={() => setSetting(true)}
+          <CloudinaryImage
             className="user-avatar"
-            width="100"
-            cloudName={process.env.REACT_APP_CLOUD_NAME}
+            onClick={() => setSetting(true)}
+            width={100}
             publicId={logedUser.imageUrl}
           />
         )}
