@@ -9,6 +9,7 @@
     "axios": "^1.1.2",
     "cloudinary-react": "^1.8.1",
     "emoji-picker-react": "^4.3.0",
+    "file-saver": "^2.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",

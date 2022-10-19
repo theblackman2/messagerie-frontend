@@ -2,20 +2,32 @@ import styled from "styled-components";
 import { AiOutlineClose } from "react-icons/ai";
 import CloudinaryImage from "./CloudinaryImage";
 import { BsFillCloudDownloadFill } from "react-icons/bs";
+import { useRef } from "react";
+import { saveAs } from "file-saver";
 
 function ViewImage({ image, cancel }) {
+  const downloadRef = useRef();
+  const downloadImage = () => {
+    const url = downloadRef.current.element.current.src;
+    saveAs(url, "image.jpg");
+  };
   return (
     <Container>
       <div className="content">
         <div className="btns">
-          <button className="download-btn">
+          <button onClick={downloadImage} className="download-btn">
             <BsFillCloudDownloadFill />
           </button>
           <button onClick={cancel} className="close">
             <AiOutlineClose />
           </button>
         </div>
-        <CloudinaryImage publicId={image} width="100%" className="show-image" />
+        <CloudinaryImage
+          reference={downloadRef}
+          publicId={image}
+          width="100%"
+          className="show-image"
+        />
       </div>
     </Container>
   );

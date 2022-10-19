@@ -9,6 +9,7 @@ function ChangeSettings({ type, cancel }) {
   const { logedUser, setLogedUser, setError } = useContext(appState);
   const imageRef = useRef();
   const pseudoRef = useRef();
+  const [submitting, setSubmitting] = useState(false);
   useEffect(() => {
     if (type !== "pseudo") return;
     pseudoRef.current.value = logedUser.pseudo;
@@ -28,6 +29,7 @@ function ChangeSettings({ type, cancel }) {
   const changeProfilePicture = (e) => {
     e.preventDefault();
     if (!previewLink) return;
+    setSubmitting(true);
     const route = usersRoute;
     const changed = axios({
       method: "put",
@@ -50,11 +52,13 @@ function ChangeSettings({ type, cancel }) {
           imageUrl: response.data.data.imageUrl,
         }));
         cancel();
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
         setError(true);
-      });
+      })
+      .finally(() => setSubmitting(false));
   };
 
   return (
@@ -98,7 +102,7 @@ function ChangeSettings({ type, cancel }) {
               Annuler
             </button>
             <button type="submit" className="btn btn-primary">
-              Modifier
+              {submitting ? "Chargement..." : "Modifier"}
             </button>
           </div>
         </form>

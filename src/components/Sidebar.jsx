@@ -42,7 +42,7 @@ function Sidebar() {
         {logedUser.imageUrl && (
           <CloudinaryImage
             className="user-avatar"
-            onClick={() => setSetting(true)}
+            handleClick={() => setSetting(true)}
             width={100}
             publicId={logedUser.imageUrl}
           />
