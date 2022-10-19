@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import appState from "../utils/state";
 import { BsFillImageFill } from "react-icons/bs";
-import { Image } from "cloudinary-react";
+import CloudinaryImage from "./CloudinaryImage";
 
 function Recent({ recent }) {
   const {
@@ -52,12 +52,17 @@ function Recent({ recent }) {
         />
       )}
       {contact.imageUrl && (
-        <Image
-          width="50"
+        <CloudinaryImage
           className="avatar"
-          cloudName={process.env.REACT_APP_CLOUD_NAME}
+          width={50}
           publicId={contact.imageUrl}
         />
+        // <Image
+        //   width="50"
+        //   className="avatar"
+        //   cloudName={process.env.REACT_APP_CLOUD_NAME}
+        //   publicId={contact.imageUrl}
+        // />
       )}
 
       <div className="recent-infos">
