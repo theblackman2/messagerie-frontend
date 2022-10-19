@@ -61,7 +61,7 @@ function SignupForm() {
           setLogedUser(user);
           setLogedIn(true);
         })
-        .catch((err) => setError(true))
+        .catch(() => setError(true))
         .finally(() => setSubmitting(false));
     }
   };

@@ -12,6 +12,7 @@
   },
   "plugins": ["react", "prettier"],
   "rules": {
+    "react/no-unescaped-entities": 0,
     "linebreak-style": ["error", "unix"],
     "quotes": ["error", "double"],
     "semi": ["error", "always"],
