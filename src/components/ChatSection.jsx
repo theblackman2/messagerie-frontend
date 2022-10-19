@@ -7,12 +7,11 @@ import { BsFillEmojiSmileFill } from "react-icons/bs";
 import { AiFillCamera } from "react-icons/ai";
 import { IoSend } from "react-icons/io5";
 import Sending from "./Sending";
-import Message from "./Message";
 import { scrollToBottom } from "../utils/functions";
 import EmojiPicker from "emoji-picker-react";
 import ImagePreview from "./ImagePreview";
-import { GrLinkBottom } from "react-icons/gr";
-import { Image } from "cloudinary-react";
+import ConversationHead from "./ConversationHead";
+import ConversationBody from "./ConversationBody";
 
 function ChatSection() {
   const {
@@ -25,7 +24,6 @@ function ChatSection() {
     setError,
   } = useContext(appState);
   const [sending, setSending] = useState(false);
-  const messageEndRef = useRef();
   const [messages, setMessages] = useState([]);
   const [pickingEmoji, setPickingEmoji] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -42,11 +40,6 @@ function ChatSection() {
 
   // store a choosen image
   const imageRef = useRef();
-
-  // scroll when update messages
-  useEffect(() => {
-    scrollToBottom(messageEndRef, true);
-  }, [messages]);
 
   const cancelImage = () => {
     imageRef.current.value = "";
@@ -114,68 +107,14 @@ function ChatSection() {
     <Container>
       {currentConversation ? (
         <>
-          <div className="conversation-head">
-            {selectedConversation.imageUrl === "/uknown.png" ? (
-              <img
-                src={selectedConversation.imageUrl}
-                alt={`${selectedConversation.name} avatar`}
-                className="conversation-avatar"
-              />
-            ) : (
-              <Image
-                width="60"
-                className="conversation-avatar"
-                cloudName={process.env.REACT_APP_CLOUD_NAME}
-                publicId={selectedConversation.imageUrl}
-              />
-            )}
-            <div className="conversation-name">
-              <h3 className="name">{selectedConversation.name}</h3>
-            </div>
-          </div>
-          <div className="conversation-body">
-            {creatingConversation ? (
-              <div>Creating conversation</div>
-            ) : messages.length <= 0 ? (
-              <NoChat>
-                <div className="text">Aucun message, faites le premier pas</div>
-                <img
-                  src="/animated-send.gif"
-                  alt="Man on floor"
-                  className="illustration"
-                />
-              </NoChat>
-            ) : (
-              <div className="messages">
-                {messages.map((message, index) => {
-                  const text = message.text;
-                  const mine = message.sender === logedUser.id;
-                  const stamps = message.createdAt;
-                  const stampsArray = stamps.split("T");
-                  const date = stampsArray[0].split("-").reverse().join("/");
-                  const time = stampsArray[1].split(".")[0];
-                  const finalDate = `Le ${date} à ${time}`;
-                  const image = message.imageUrl;
-                  return (
-                    <Message
-                      key={index}
-                      text={text}
-                      mine={mine}
-                      date={finalDate}
-                      image={image}
-                    />
-                  );
-                })}
-              </div>
-            )}
-            <button
-              onClick={() => scrollToBottom(messageEndRef, true)}
-              className="go-bottom"
-            >
-              <GrLinkBottom />
-            </button>
-            <div ref={messageEndRef} />
-          </div>
+          <ConversationHead
+            imageUrl={selectedConversation.imageUrl}
+            name={selectedConversation.name}
+          />
+          <ConversationBody
+            creating={creatingConversation}
+            messages={messages}
+          />
           <div className="conversation-foot">
             <form onSubmit={handleSend}>
               {previewLink && (
@@ -250,46 +189,6 @@ const Container = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   padding: 1rem;
   position: relative;
-
-  .conversation-body {
-    overflow-y: scroll;
-    max-height: calc(100% - 130px);
-    padding: 1rem 0;
-
-    .go-bottom {
-      position: absolute;
-      bottom: 80px;
-      font-weight: bold;
-      font-size: 20px;
-      right: 1rem;
-      z-index: 20;
-    }
-
-    .messages {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-  }
-
-  .conversation-head {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80px;
-    width: 100%;
-    border-bottom: 2px solid #ccc;
-    position: relative;
-
-    .conversation-avatar {
-      width: 60px;
-      border-radius: 50%;
-      height: 60px;
-      position: absolute;
-      top: 10px;
-      left: 1rem;
-    }
-  }
 
   .conversation-foot {
     position: absolute;
