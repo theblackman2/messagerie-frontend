@@ -1,15 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { Image } from "cloudinary-react";
+import CloudinaryImage from "./CloudinaryImage";
 
-function Message({ image, text, mine, date }) {
+function Message({ image, text, mine, date, view }) {
   return (
     <Container mine={mine}>
       {image && (
-        <Image
+        <CloudinaryImage
+          handleClick={() => view(image)}
           className="chat-img"
           width="60%"
-          cloudName={process.env.REACT_APP_CLOUD_NAME}
           publicId={image}
         />
       )}
@@ -34,9 +34,11 @@ const Container = styled.div`
   max-width: 80%;
   margin-left: ${({ mine }) => (mine ? "auto" : "20px")};
   margin-right: ${({ mine }) => (!mine ? "auto" : "20px")};
+  animation: newmessage 0.2s;
   .chat-img {
     margin-left: ${({ mine }) => (mine ? "auto" : "20px")};
     margin-right: ${({ mine }) => (!mine ? "auto" : "20px")};
+    cursor: pointer;
   }
   .text {
     padding: 10px 20px;
@@ -49,6 +51,7 @@ const Container = styled.div`
     border-radius: 10px;
     font-size: 14px;
     line-height: 1.3em;
+    word-break: break-all;
 
     .dir {
       display: block;
@@ -68,5 +71,15 @@ const Container = styled.div`
     font-size: 11px;
     color: #d9d9d9;
     margin-left: ${({ mine }) => (mine ? "auto" : "0")};
+  }
+  @keyframes newmessage {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 `;

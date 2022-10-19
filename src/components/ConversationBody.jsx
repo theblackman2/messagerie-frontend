@@ -1,19 +1,26 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { scrollToBottom } from "../utils/functions";
 import Message from "./Message";
 import { GrLinkBottom } from "react-icons/gr";
 import { NoChat } from "./ChatSection";
 import appState from "../utils/state";
+import ViewImage from "./ViewImage";
 
 function ConversationBody({ creating, messages }) {
-  const { logedUser } = useContext(appState);
+  const [viewImage, setViewImage] = useState(null);
+  const closeViewImage = () => setViewImage(null);
+  const { logedUser, selectedConversation } = useContext(appState);
+  useEffect(() => {
+    closeViewImage();
+  }, [selectedConversation]);
   const messageEndRef = useRef();
   useEffect(() => {
     scrollToBottom(messageEndRef, true);
   }, [messages]);
   return (
     <Container>
+      {viewImage && <ViewImage cancel={closeViewImage} image={viewImage} />}
       {creating ? (
         <div>Creating conversation</div>
       ) : messages.length <= 0 ? (
@@ -38,6 +45,7 @@ function ConversationBody({ creating, messages }) {
             const image = message.imageUrl;
             return (
               <Message
+                view={setViewImage}
                 key={index}
                 text={text}
                 mine={mine}
@@ -65,6 +73,7 @@ const Container = styled.div`
   overflow-y: scroll;
   max-height: calc(100% - 130px);
   padding: 1rem 0;
+  /* position: absolute; */
 
   .go-bottom {
     position: absolute;

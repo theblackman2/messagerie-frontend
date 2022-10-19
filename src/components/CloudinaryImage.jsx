@@ -1,9 +1,10 @@
 import React from "react";
 import { Image } from "cloudinary-react";
 
-function CloudinaryImage({ publicId, width, className }) {
+function CloudinaryImage({ publicId, width, className, handleClick }) {
   return (
     <Image
+      onClick={handleClick}
       publicId={publicId}
       width={width}
       className={className}
