@@ -11,6 +11,7 @@ function Recent({ recent }) {
     socket,
     sentMessage,
     setCurrentId,
+    selectedConversation,
   } = useContext(appState);
   const [recentMessage, setRecentMessage] = useState(
     recent.messages[recent.messages.length - 1]
@@ -35,6 +36,8 @@ function Recent({ recent }) {
 
   return (
     <Container
+      selected={selectedConversation.id}
+      curent={contact._id}
       onClick={() => {
         setSelectedConversation({
           id: contact._id,
@@ -57,12 +60,6 @@ function Recent({ recent }) {
           width={50}
           publicId={contact.imageUrl}
         />
-        // <Image
-        //   width="50"
-        //   className="avatar"
-        //   cloudName={process.env.REACT_APP_CLOUD_NAME}
-        //   publicId={contact.imageUrl}
-        // />
       )}
 
       <div className="recent-infos">
@@ -74,6 +71,7 @@ function Recent({ recent }) {
           {recentMessage.imageUrl && <BsFillImageFill className="image-show" />}
           {recentMessage.imageUrl && "  Photo"}
         </p>
+        <span className="current"></span>
       </div>
     </Container>
   );
@@ -89,6 +87,7 @@ const Container = styled.div`
   gap: 10px;
   cursor: pointer;
   min-height: 60px;
+  position: relative;
 
   .avatar {
     width: 50px;
@@ -105,5 +104,16 @@ const Container = styled.div`
         color: black;
       }
     }
+  }
+
+  .current {
+    display: inline-block;
+    position: absolute;
+    width: 5px;
+    height: 100%;
+    top: 0;
+    right: 0;
+    background-color: ${({ selected, curent }) =>
+      selected === curent ? "#ffe921" : "white"};
   }
 `;
