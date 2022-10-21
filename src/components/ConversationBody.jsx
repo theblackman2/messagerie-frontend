@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { scrollToBottom } from "../utils/functions";
 import Message from "./Message";
-import { GrLinkBottom } from "react-icons/gr";
+import { AiOutlineArrowDown } from "react-icons/ai";
 import { NoChat } from "./ChatSection";
 import appState from "../utils/state";
 import ViewImage from "./ViewImage";
@@ -37,11 +37,6 @@ function ConversationBody({ creating, messages }) {
           {messages.map((message, index) => {
             const text = message.text;
             const mine = message.sender === logedUser.id;
-            const stamps = message.createdAt;
-            const stampsArray = stamps.split("T");
-            const date = stampsArray[0].split("-").reverse().join("/");
-            const time = stampsArray[1].split(".")[0];
-            const finalDate = `Le ${date} à ${time}`;
             const image = message.imageUrl;
             return (
               <Message
@@ -49,7 +44,7 @@ function ConversationBody({ creating, messages }) {
                 key={index}
                 text={text}
                 mine={mine}
-                date={finalDate}
+                // date={date}
                 image={image}
               />
             );
@@ -60,7 +55,7 @@ function ConversationBody({ creating, messages }) {
         onClick={() => scrollToBottom(messageEndRef, true)}
         className="go-bottom"
       >
-        <GrLinkBottom />
+        <AiOutlineArrowDown />
       </button>
       <div ref={messageEndRef} />
     </Container>
@@ -80,7 +75,7 @@ const Container = styled.div`
     bottom: 80px;
     font-weight: bold;
     font-size: 20px;
-    right: 1rem;
+    right: 0.5rem;
     z-index: 20;
   }
 

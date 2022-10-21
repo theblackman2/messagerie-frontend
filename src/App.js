@@ -38,6 +38,23 @@ function App() {
   const [newUser, setNewUser] = useState(null);
   const [notification, setNotification] = useState(null);
   const [setting, setSetting] = useState(false);
+  const [screenDimensions, setScreenDimensions] = useState({
+    width: window.innerWidth,
+    heigth: window.innerHeight,
+  });
+
+  const detectDimensionsChange = () => {
+    setScreenDimensions({
+      width: window.innerWidth,
+      heigth: window.innerHeight,
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", detectDimensionsChange);
+
+    return () => window.removeEventListener("resize", detectDimensionsChange);
+  }, [screenDimensions]);
 
   // clear notification after 3 seconds
   useEffect(() => {
@@ -223,6 +240,7 @@ function App() {
         closeNotification,
         setting,
         setSetting,
+        screenDimensions,
       }}
     >
       <BrowserRouter>

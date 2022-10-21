@@ -14,6 +14,7 @@ function Sidebar() {
     setShowContacts,
     socket,
     setSetting,
+    screenDimensions,
   } = useContext(appState);
   const disconnect = () => {
     localStorage.clear();
@@ -28,8 +29,9 @@ function Sidebar() {
 
     // eslint-disable-next-line
   }, []);
+
   return (
-    <Container showContacts={showContacts}>
+    <Container dimensions={screenDimensions} showContacts={showContacts}>
       <div className="sidebar-top">
         {!logedUser.imageUrl && (
           <img
@@ -43,7 +45,7 @@ function Sidebar() {
           <CloudinaryImage
             className="user-avatar"
             handleClick={() => setSetting(true)}
-            width={100}
+            width={screenDimensions.width > 900 ? 100 : 80}
             publicId={logedUser.imageUrl}
           />
         )}
@@ -92,8 +94,9 @@ const Container = styled.div`
     gap: 2rem;
 
     .user-avatar {
-      width: 100px;
-      height: 100px;
+      width: ${({ dimensions }) => (dimensions.width > 900 ? "100px" : "60px")};
+      height: ${({ dimensions }) =>
+        dimensions.width > 900 ? "100px" : "60px"};
       border-radius: 50%;
       cursor: pointer;
     }
@@ -154,6 +157,31 @@ const Container = styled.div`
 
       :hover {
         color: #28282e;
+      }
+    }
+  }
+
+  @media (max-width: 900px) {
+    height: 80px;
+    flex-direction: row;
+
+    .sidebar-top {
+      width: fit-content;
+      flex-direction: row;
+      gap: 0.6rem;
+
+      .switches {
+        flex-direction: row;
+        gap: 0.5rem;
+
+        .switch {
+          transform: rotate(90deg);
+          padding: 10px 20px;
+
+          svg {
+            transform: rotate(-90deg);
+          }
+        }
       }
     }
   }
