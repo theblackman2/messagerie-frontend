@@ -9,10 +9,10 @@ import appState from "../utils/state";
 import Settings from "../components/Settings";
 
 function Chats({ notification }) {
-  const { closeNotification, setting } = useContext(appState);
+  const { closeNotification, setting, screenDimensions } = useContext(appState);
 
   return (
-    <Container>
+    <Container dimensions={screenDimensions}>
       {setting && <Settings className="settings" />}
       {notification && (
         <Notification>
@@ -41,24 +41,40 @@ export default Chats;
 
 const Container = styled.div`
   padding: 1.5rem;
+  padding: ${({ dimensions }) =>
+    dimensions.width > 900 ? "1.5rem" : "0.5rem"};
   width: 100%;
   height: 100vh;
   max-height: 100vh;
   display: flex;
+  flex-direction: ${({ dimensions }) =>
+    dimensions.width > 900 ? "row" : "column"};
   gap: 1rem;
   background-color: #eaeaea;
   position: relative;
 
   .side-bar {
-    width: 20%;
+    width: ${(props) => (props.dimensions.width > 900 ? "20%" : "100%")};
   }
 
   .contacts-section {
-    width: 30%;
+    width: ${(props) => (props.dimensions.width > 900 ? "30%" : "100%")};
+    height: calc(100vh - 90px);
+    /* height: auto; */
   }
 
   .chat-section {
     width: 50%;
+  }
+
+  @media (max-width: 900px) {
+    .chat-section {
+      display: none;
+    }
+
+    .chat-section {
+      height: 100%;
+    }
   }
 `;
 
