@@ -85,7 +85,8 @@ const Container = styled.div`
     /* flex: 1 1 auto; */
     width: 100%;
     height: auto;
-    min-height: calc(100% - 50px - 1rem);
+    height: 100%;
+    /* min-height: calc(100% - 50px - 1rem); */
     border-radius: 20px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }

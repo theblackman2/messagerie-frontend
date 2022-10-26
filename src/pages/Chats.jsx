@@ -59,6 +59,8 @@ const Container = styled.div`
 
   .contacts-section {
     width: ${(props) => (props.dimensions.width > 900 ? "30%" : "100%")};
+    height: calc(100vh - 90px);
+    /* height: auto; */
   }
 
   .chat-section {
